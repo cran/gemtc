@@ -1,7 +1,7 @@
-cd9ab782d96eac91b931c73dcbb06198 *DESCRIPTION
+596b65738cf2cee302b259a2e4d12aac *DESCRIPTION
 bb6db0cb4afc68ca25525e345873ef88 *NAMESPACE
-eeb7cf8125f94ab79118c26fe703999a *R/mtc.R
-6cc158455baf406291961fb32e64c1a0 *R/mtc.rjava.R
+c996b110b2d4dd2edf6f493d279218da *R/mtc.R
+c096744a0d44c874a1f5aa4c93ce03c5 *R/mtc.rjava.R
 2a24ff8c2f6e064727e1deaaf89392b3 *inst/extdata/cipriani-efficacy.gemtc
 4664d92f9fa233013b540b08e12a25b0 *inst/extdata/luades-smoking.gemtc
 dabaafb13d4c5eebbc156d0b0ea05223 *inst/extdata/luades-smoking.samples.gz
@@ -15,7 +15,7 @@ c32e7bb00be0a1688e916c633f6152e7 *inst/extdata/welton-systolic.gemtc
 0b29b44ad50e0c3fd7470e2d5899961c *man/figures/parkinson-inconsistency.png
 df0b2ed86b163fe79037e4af36cc4346 *man/gemtc-package.Rd
 6a89915128eff79dedb34b651773971d *man/mtc.model.Rd
-beaeb5d1880534ba9920a0fa864a205b *man/mtc.network.Rd
+e86875507c8350cc300721e995068bb8 *man/mtc.network.Rd
 ab8550a388a1402ae8b2ff54a33274ee *man/mtc.run.Rd
 c35111d7ed8a5888e074f4fdeb959a43 *man/rank.probability.Rd
 fd3d97b05523d3ca13788a452abacdc8 *man/read.mtc.network.Rd
