@@ -12,7 +12,7 @@ Network meta-analysis R package based on the Java GeMTC library from \url{http:/
 Network meta-analysis, or mixed treatment comparison (MTC) is a technique to meta-analyze networks of trials comparing two or more treatments at the same time (Lu & Ades, 2004).
 Using a Bayesian hierarchical model, all direct and indirect comparisons are taken into account to arrive at a single, integrated, estimate of the effect of all included treatments based on all included studies.
 
-This package allows the automated generation of consistency and inconsistency models that can be run using JAGS (using the rjags package), OpenBUGS (using the BRugs package), WinBUGS (using the R2WinBUGS package) or YADAS (provided by GeMTC).
+This package allows the automated generation of consistency that can be run using JAGS (using the rjags package), OpenBUGS (using the BRugs package) or WinBUGS (using the R2WinBUGS package).
 Furthermore it allows interoperability with GeMTC files that were created by the GeMTC GUI or exported through \href{http://drugis.org/addis}{ADDIS}.
 The source for GeMTC is available under GPL3 on \href{https://github.com/gertvv/mtc}{Github}.
 
@@ -28,7 +28,8 @@ In network meta-analysis, the exchangeability assumption can also be violated be
 Inconsistency occurs when a treatment C has a different effect when it is compared with A or B, i.e. studies comparing A and C are systematically different from studies comparing B and C.
 Thus, inconsistency may also be present when a series of pair-wise meta-analyses are conducted, but can only be detected in a network meta-analysis, and then only when there are closed loops in the evidence structure. 
 
-Statistical models can be used to detect inconsistency (Lu & Ades, 2006), but careful consideration of the characteristics of the studies is even more important to ensure valid results from a network meta-analysis.
+Statistical models can be used to detect inconsistency (Lu & Ades, 2006; Dias et al. 2010), but careful consideration of the characteristics of the studies is even more important to ensure valid results from a network meta-analysis. 
+Unfortunately, inconsistency models are currently not available in this R package, but will be in the future. 
 
 If there is no relevant inconsistency in the evidence, a consistency model can be used to draw conclusions about the relative effects of the included treatments and their ranking.
 }
@@ -52,8 +53,11 @@ Statistics in Medicine, 23(20):3105-3124.
 G. Lu and A.E. Ades (2006), \emph{Assessing evidence inconsistency in mixed treatment comparisons},
 Journal of the American Statistical Association, 101(474): 447-459.
 [\href{http://dx.doi.org/10.1198/016214505000001302}{doi:10.1198/016214505000001302}]
-}
 
+S. Dias, N.J. Welton, D.M. Caldwell, A.E. Ades (2010), \emph{Checking consistency in mixed treatment comparison meta-analysis},
+Statistics in Medicine,  30;29(7-8):932-44.
+[\href{http://dx.doi.org/10.1002/sim.3767}{doi:10.1002/sim.3767}]
+}
 \seealso{
 \code{\link{mtc.network}},
 \code{\link{mtc.model}},
@@ -62,15 +66,35 @@ Journal of the American Statistical Association, 101(474): 447-459.
 
 \examples{
 # Load the example network and generate a consistency model:
-file <- system.file("extdata/luades-thrombolytic.gemtc", package="gemtc")
+file <- system.file("extdata/luades-smoking.gemtc", package="gemtc")
 network <- read.mtc.network(file) 
 model <- mtc.model(network, type="consistency")
 
 # Load pre-generated samples instead of runing the model:
-\dontrun{results <- mtc.run(model)}
-file.samples <- system.file("extdata/luades-thrombolytic.samples.gz", package="gemtc")
-results <- read.mtc.result.samples(file.samples, model, "rjags")
+\dontrun{results <- mtc.run(model, thin=10)}
+results <- dget(system.file("extdata/luades-smoking.samples.gz", package="gemtc"))
 
 # Print a basic statistical summary of the results:
 summary(results)
+## Iterations = 5010:25000
+## Thinning interval = 10 
+## Number of chains = 4 
+## Sample size per chain = 2000 
+## 
+## 1. Empirical mean and standard deviation for each variable,
+##    plus standard error of the mean:
+## 
+##         Mean     SD Naive SE Time-series SE
+## d.A.B 0.4965 0.4081 0.004563       0.004989
+## d.A.C 0.8359 0.2433 0.002720       0.003147
+## d.A.D 1.1088 0.4355 0.004869       0.005280
+## sd.d  0.8465 0.1913 0.002139       0.002965
+## 
+## 2. Quantiles for each variable:
+## 
+##          2.5%    25%    50%    75% 97.5%
+## d.A.B -0.2985 0.2312 0.4910 0.7530 1.341
+## d.A.C  0.3878 0.6720 0.8273 0.9867 1.353
+## d.A.D  0.2692 0.8197 1.0983 1.3824 2.006
+## sd.d   0.5509 0.7119 0.8180 0.9542 1.283
 }
