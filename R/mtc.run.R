@@ -30,7 +30,9 @@ mtc.run <- function(model, sampler=NA, n.adapt=5000, n.iter=20000, thin=1) {
     }
     sampler <- found
 
-    samples <- mtc.sample(model, package=sampler, n.adapt=n.adapt, n.iter=n.iter, thin=thin)
+	tryCatch(
+		samples <- mtc.sample(model, package=sampler, n.adapt=n.adapt, n.iter=n.iter, thin=thin),
+		error = function(e) { print(model$inits) })
 
     result <- list(
         samples=samples,
@@ -41,16 +43,12 @@ mtc.run <- function(model, sampler=NA, n.adapt=5000, n.iter=20000, thin=1) {
 }
 
 mtc.build.syntaxModel <- function(model) {
-    if (model$type == 'Consistency') {
-        list(
-            model = model$code,
-            data = model$data,
-            inits = model$inits,
-            vars = c(mtc.basic.parameters(model), "sd.d")
-        )
-    } else {
-        stop(paste("Model type", model$type, "unknown."))
-    }
+	list(
+		model = model$code,
+		data = model$data,
+		inits = model$inits,
+		vars = if (!is.null(model$monitors$enabled)) model$monitors$enabled else c(mtc.basic.parameters(model), "sd.d")
+	)
 }
 
 mtc.sample <- function(model, package, n.adapt=n.adapt, n.iter=n.iter, thin=thin) {
