@@ -1,19 +1,67 @@
 ## mtc.model class methods
 
-mtc.model <- function(network, type="Consistency", factor=2.5, n.chain=4) {
-    typeMap <- c(
-        'Consistency'='Consistency',
-        'consistency'='Consistency',
-        'cons'='Consistency')
+mtc.model.call <- function(fn, model, ...) {
+    fn <- paste(fn, model$type, sep='.')
+	do.call(fn, c(list(model), list(...)))
+}
 
-    if (is.na(typeMap[type])) {
+mtc.model.defined <- function(model) {
+	fns <- c('mtc.model', 'mtc.model.name')
+	fns <- paste(fns, model$type, sep='.')
+	all(exists(fns, mode='function'))
+}
+
+mtc.model <- function(network, type="consistency",
+		factor=2.5, n.chain=4,
+		likelihood=NULL, link=NULL, ...) {
+	if (!inherits(network, "mtc.network")) {
+		stop('Given network is not an mtc.network')
+	}
+
+	model <- list(
+        type = type,
+        network = network,
+        n.chain = n.chain,
+        var.scale = factor)
+
+    if (!mtc.model.defined(model)) {
         stop(paste(type, 'is not an MTC model type.'))
     }
-    type <- typeMap[type]
 
-    if (type == 'Consistency') {
-        mtc.model.consistency(network, factor=factor, n.chain=n.chain)
-    }
+	model$likelihood <- likelihood
+	model$link <- link
+	if (!is.null(network[['data']]) && 'responders' %in% colnames(network[['data']])) {
+		if (is.null(likelihood)) {
+			model$likelihood = 'binom'
+		}
+		if (is.null(link)) {
+			model$link = 'logit'
+		}
+	} else if (!is.null(network[['data']]) && 'mean' %in% colnames(network[['data']])) {
+		if (is.null(likelihood)) {
+			model$likelihood = 'normal'
+		}
+		if (is.null(link)) {
+			model$link = 'identity'
+		}
+	} else {
+		if (is.null(likelihood)) {
+			warning('Likelihood can not be inferred. Defaulting to normal.')
+			model$likelihood = 'normal'
+		}
+		if (is.null(link)) {
+			warning('Link can not be inferred. Defaulting to identity.')
+			model$link = 'identity'
+		}
+	}
+	if (!ll.defined(model)) {
+		stop(paste('likelihood = ', model$likelihood,
+			', link = ', model$link, ' not found!', sep=''))
+	}
+
+    model$om.scale <- guess.scale(model)
+
+	mtc.model.call('mtc.model', model, ...)
 }
 
 print.mtc.model <- function(x, ...) {
@@ -30,12 +78,10 @@ plot.mtc.model <- function(x, layout=igraph::layout.circle, ...) {
 }
 
 mtc.model.graph <- function(model) { 
-    if (model$type == 'Consistency') {
-        comparisons <- mtc.comparisons(model$network)
-        g <- model$tree
-        g <- g + edges(as.vector(unlist(non.edges(g, comparisons))), arrow.mode=0, lty=1, color="grey")
-        g
-    }
+	comparisons <- mtc.comparisons(model$network)
+	g <- if (!is.null(model$tree)) model$tree else model$graph
+	g <- g + edges(as.vector(unlist(non.edges(g, comparisons))), arrow.mode=0, lty=1, color="grey")
+	g
 }
 
 # filters list of comparison by edges that are not yet present in graph g 
@@ -47,9 +93,9 @@ non.edges <- function(g, comparisons) {
 }
 
 mtc.basic.parameters <- function(model) {
-    tree <- model$tree
-    sapply(E(tree), function(e) {
-        v <- get.edge(tree, e)
-        paste("d", V(tree)[v[1]]$name, V(tree)[v[2]]$name, sep=".")
+    graph <- if (!is.null(model$tree)) model$tree else model$graph
+    sapply(E(graph), function(e) {
+        v <- get.edge(graph, e)
+        paste("d", V(graph)[v[1]]$name, V(graph)[v[2]]$name, sep=".")
     })
 }
