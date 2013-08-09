@@ -1,19 +1,12 @@
 model {
+	# Likelihood for arm-based data
 	$armeffect$
-	$releffect$
+	# Likelihood for contrast-based data (univariate for 2-arm trials)
+	$releffect.r2$
+	# Likelihood for contrast-based data (multivariate for multi-arm trials)
+	$releffect.rm$
 
-	for (i in 1:ns) {
-		# Study-level relative effects
-		w[i, 1] <- 0
-		delta[i, 1] <- 0
-		for (k in 2:na[i]) { # parameterize multi-arm trials using a trick to avoid dmnorm
-			delta[i, k] ~ dnorm(md[i, k], taud[i, k])
-			md[i, k] <- d[t[i, 1], t[i, k]] + sw[i, k]
-			taud[i, k] <- tau.d * 2 * (k - 1) / k
-			w[i, k] <- delta[i, k] - (d[t[i, 1], t[i, k]])
-			sw[i, k] <- sum(w[i, 1:k-1]) / (k - 1)
-		}
-	}
+	$linearModel$
 
 	# Relative effect matrix
 	$relativeEffectMatrix$
@@ -21,14 +14,10 @@ model {
 	prior.prec <- pow(15 * om.scale, -2)
 
 	# Study baseline priors
-	for (i in 1:ns.a) {
-		mu[i] ~ dnorm(0, prior.prec)
-	}
-
-	# Variance prior
-	sd.d ~ dunif(0, om.scale)
-	tau.d <- pow(sd.d, -2)
+	$studyBaselinePriors$
 
 	# Effect parameter priors
 	$relativeEffectPriors$
+
+	foo <- ns.a + ns.r2 + ns.rm # to please WinBUGS
 }
