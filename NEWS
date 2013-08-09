@@ -1,3 +1,52 @@
+gemtc 0.4
+===========
+
+Released 2013-08-09
+
+New features:
+
+ * fixed effect models
+ * poisson/log likelihood/link for survival data
+ * allow std.err instead of std.dev + sampleSize in continuous data sets
+
+Changes:
+
+ * refuse to generate models when treatments are duplicated in
+   multiple arms of the same study, since the code does not take this
+   into account.
+ * network$data is now network$data.ab for consistency with
+   network$data.re
+ * likelihood/link implementations can now define their data
+   requirements
+ * export ll.call for programmatic access to likelihood/link specific
+   functions
+
+Bugfixes:
+
+ * multi-arm trial decomposition sometimes resulted in NA standard
+   errors
+ * WinBUGS and OpenBUGS had complaints about the relative effect code
+ * safer matrix indexing: explicit 'drop='
+ * safer data frame indexing: use [['x']] instead of $x
+
+gemtc 0.3
+===========
+
+Released 2013-07-16
+
+Many additional features:
+
+ * support for relative effect data
+ * support for mixed arm-based and relative effect data
+ * binom/cloglog likelihood/link for rate data
+ * unrelated mean effects (UME) model
+ * unrelated study effects (USE) model
+ * analysis of heterogeneity with heterogeneity plot (EXPERIMENTAL)
+ * full access to generated code, data structures, and parameters
+ * guard against "impossible" initial values
+
+Also, bugfixes and documentation updates.
+
 gemtc 0.2
 ===========
 

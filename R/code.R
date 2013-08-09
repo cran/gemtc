@@ -1,21 +1,48 @@
 mtc.model.code <- function(model, params, relEffectMatrix, template='gemtc.model.template.txt') {
-    template <- read.template(template)
+  template <- read.template(template)
 
+  if (model[['data']][['ns.a']] > 0) {
     arm.code <- read.template('gemtc.armeffect.likelihood.txt')
     template <- template.block.sub(template, 'armeffect', arm.code)
-    rel.code <- read.template('gemtc.releffect.likelihood.txt')
-    template <- template.block.sub(template, 'releffect', rel.code)
-
-    lik.code <- do.call(paste("mtc.code.likelihood", model$likelihood, model$link, sep="."), list())
+    lik.code <- do.call(paste("mtc.code.likelihood", model[['likelihood']], model[['link']], sep="."), list())
     template <- template.block.sub(template, 'likelihood', lik.code)
+  } else {
+    template <- template.block.sub(template, 'armeffect', '## OMITTED')
+  }
 
-    network <- model$network
+  if (model[['data']][['ns.r2']] > 0) {
+    rel.code <- read.template('gemtc.releffect.likelihood.r2.txt')
+    template <- template.block.sub(template, 'releffect.r2', rel.code)
+  } else {
+    template <- template.block.sub(template, 'releffect.r2', '## OMITTED')
+  }
 
-    template <- template.block.sub(template, 'relativeEffectMatrix', relEffectMatrix)
+  if (model[['data']][['ns.rm']] > 0) {
+    rel.code <- read.template('gemtc.releffect.likelihood.rm.txt')
+    template <- template.block.sub(template, 'releffect.rm', rel.code)
+  } else {
+    template <- template.block.sub(template, 'releffect.rm', '## OMITTED')
+  }
 
-    # Generate parameter priors
-    priors <- paste(params, "~", "dnorm(0, prior.prec)", collapse="\n")
-    template <- template.block.sub(template, 'relativeEffectPriors', priors)
+  mod.code <- if (model[['linearModel']] == "fixed") {
+    read.template('gemtc.fixedeffect.txt')
+  } else {
+    read.template('gemtc.randomeffects.txt')
+  }
+  template <- template.block.sub(template, 'linearModel', mod.code)
 
-    template
+  template <- template.block.sub(template, 'relativeEffectMatrix', relEffectMatrix)
+
+  if (model[['data']][['ns.a']] > 0) {
+    sbPriors <- read.template('gemtc.study.baseline.priors.txt')
+    template <- template.block.sub(template, 'studyBaselinePriors', sbPriors)
+  } else {
+    template <- template.block.sub(template, 'studyBaselinePriors', '## OMITTED')
+  }
+
+  # Generate parameter priors
+  priors <- paste(params, "~", "dnorm(0, prior.prec)", collapse="\n")
+  template <- template.block.sub(template, 'relativeEffectPriors', priors)
+
+  template
 }
