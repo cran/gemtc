@@ -16,6 +16,19 @@ filter.network <- function(network, filter, filter.ab=filter, filter.re=filter) 
   mtc.network(data=data.ab, data.re=data.re)
 }
 
+decompose.variance <- function(V) {
+  na <- ncol(V)
+  J <- matrix(1, ncol=na, nrow=na)
+  # Pseudo-inverse Laplacian
+  Lt <- -0.5 * (V - (1 / na) * (V %*% J + J %*% V) + (1 / na^2) * (J %*% V %*% J))
+  # Laplacian
+  L <- solve(Lt - J/na) + J/na
+
+  prec <- -L
+  diag(prec) <- Inf
+  1/prec
+}
+
 # Decompose trials based on a consistency model and study.samples
 decompose.trials <- function(result) {
   decompose.study <- function(samples) {
@@ -33,15 +46,7 @@ decompose.trials <- function(result) {
       })
     })
 
-    J <- matrix(1, ncol=na, nrow=na)
-    # Pseudo-inverse Laplacian
-    Lt <- -0.5 * (V - (1 / na) * (V %*% J + J %*% V) + (1 / na^2) * (J %*% V %*% J))
-    # Laplacian
-    L <- solve(Lt - J/na) + J/na
-
-    prec <- -L
-    diag(prec) <- 0
-    se <- sqrt(1/prec)
+    se <- sqrt(decompose.variance(V))
 
     pairs <- all.pair.matrix(na)
     list(
@@ -86,17 +91,11 @@ decompose.trials <- function(result) {
 
 # decomposes the given network's multi-arm trials into
 # a series of (approximately) equivalent two-arm trials
-decompose.network <- function(network, result=NULL, likelihood=NULL, link=NULL) {
+decompose.network <- function(network, result) {
   # find all multi-arm trials
   data <- mtc.merge.data(network)
   studies <- unique(data[['study']])
   studies <- studies[sapply(studies, function(study) { sum(data[['study']] == study) > 2 })]
-
-  if (is.null(result)) {
-    ma.network <- filter.network(network, function(row) { row['study'] %in% studies })
-    model <- mtc.model(ma.network, type='use', likelihood=likelihood, link=link)
-    result <- mtc.run(model)
-  }
 
   data <- decompose.trials(result)
   data.re <- do.call(rbind, lapply(studies, function(study) {
@@ -115,18 +114,20 @@ decompose.network <- function(network, result=NULL, likelihood=NULL, link=NULL) 
   mtc.network(data.ab=ta.network[['data.ab']], data.re=rbind(ta.network[['data.re']], data.re))
 }
 
-mtc.anohe <- function(network, likelihood=NULL, link=NULL, ...) {
+mtc.anohe <- function(network, ...) {
+  args <- list(...)
+  if ('linearModel' %in% names(args)) {
+    stop('mtc.anohe currently does not support specifying "linearModel"')
+  }
+
   network <- fix.network(network)
 
-  model.use <- mtc.model(network, type='use', likelihood=likelihood, link=link)
-  result.use <- mtc.run(model.use, ...)
+  result.use <- mtc.model.run(network, type='use', ...)
 
-  network.decomp <- decompose.network(network, result=result.use, likelihood=likelihood, link=link)
-  model.ume <- mtc.model(network.decomp, type='ume', likelihood=likelihood, link=link)
-  result.ume <- mtc.run(model.ume, ...)
+  network.decomp <- decompose.network(network, result=result.use)
+  result.ume <- mtc.model.run(network.decomp, type='ume', ...)
 
-  model.cons <- mtc.model(network, type='consistency', likelihood=likelihood, link=link)
-  result.cons <- mtc.run(model.cons, ...)
+  result.cons <- mtc.model.run(network, type='consistency', ...)
 
   result <- list(result.cons=result.cons, result.ume=result.ume, result.use=result.use)
   class(result) <- "mtc.anohe"
