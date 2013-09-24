@@ -1,3 +1,16 @@
+gemtc 0.5
+===========
+
+Released 2013-09-24
+
+New features:
+
+ * node-splitting models
+ * mtc.nodesplit() wrapper to run multiple node-splitting models
+ * calculate DIC model fit (JAGS only)
+ * add preferredDirection to rank.probability()
+ * default plot() for rank.probability()
+
 gemtc 0.4
 ===========
 
@@ -63,9 +76,6 @@ Dropped Java dependency by rewriting core algorithms in R.
  * Compatibility note: the argument order of mtc.network has changed
  * Compatibility note: the YADAS sampler is no longer available
 
-See [roadmap](http://mantis.drugis.org/roadmap_page.php?version_id=61)
-for details.
-
 gemtc 0.1-2
 ===========
 
@@ -79,9 +89,6 @@ Bugfix release. Addresses the following issues:
  * Make Java open tab-completed paths
  * Use correct column name for continuous data
  * When only YADAS available, run YADAS by default
- 
-See [roadmap](http://mantis.drugis.org/roadmap_page.php?version_id=65)
-for details.
 
 gemtc 0.1-1
 ===========

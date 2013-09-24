@@ -5,7 +5,11 @@ print.mtc.result <- function(x, ...) {
 }
 
 summary.mtc.result <- function(object, ...) {
-  summary(object[['samples']])
+  scale.log <- if (ll.call('scale.log', object[['model']])) 'Log ' else ''
+  scale.name <- ll.call('scale.name', object[['model']])
+  list('measure'=paste(scale.log, scale.name, sep=''),
+       'summaries'=summary(object[['samples']]),
+       'DIC'=object[['dic']])
 }
 
 plot.mtc.result <- function(x, ...) {
@@ -13,7 +17,7 @@ plot.mtc.result <- function(x, ...) {
 }
 
 forest.mtc.result <- function(x, ...) {
-  quantiles <- summary(x)[['quantiles']]
+  quantiles <- summary(x[['samples']])[['quantiles']]
   model <- x[['model']]
   stats <- quantiles[grep("^d\\.", rownames(quantiles)), , drop=FALSE]
   comps <- extract.comparisons(rownames(stats))
