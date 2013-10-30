@@ -1,8 +1,8 @@
-2e25742c815b35a654a464d7b4c4c521 *DESCRIPTION
-a79509fd2672fc913feb2da8202ed779 *NAMESPACE
-7bbf534143b79ff475f5f7e0ae643681 *NEWS
-9f72e339f511e70cc2b40cc47e47f7ac *R/anohe.R
-9c3183606c00b3afab35a86db73b5f1b *R/blobbogram.R
+dc72ff5166bad5c466e0d6f7feb71dd0 *DESCRIPTION
+f0c1146c3c29e849a8a6fb7057bcbcf8 *NAMESPACE
+8d4f88dbf38cb473981079c7d159ff9c *NEWS
+89686e3ae0eaa4dc6dfc571d0fdfa7b8 *R/anohe.R
+7e39bf2882579a655995d0afa39e0734 *R/blobbogram.R
 8c0643cf94b5fb05a5f53bb823796249 *R/code.R
 2248abc4e343de70c51893e7211fcbb1 *R/data.R
 6b2d506065da8c4d8b0add5c0f4f9611 *R/inits.R
@@ -20,11 +20,12 @@ e9aa928aeb35801cd4ae77641144fe04 *R/mtc.model.use.R
 bcd1aaabdf4cb013c1dbce79f386f713 *R/mtc.network.R
 012a60de8b1d8ee5350be4cac5285567 *R/mtc.result.R
 0021495096c81aeabf0c80894cbaaaf0 *R/mtc.run.R
-14c6e841b258dd82ac9b16bbeb36ecb8 *R/nodesplit.R
+b4d81d3d8a2247d86ca3322f701c8cdf *R/nodesplit.R
 73b3ecef8bbfd588aabf5ed2e09245df *R/priors.R
 bffe3e63130f59b9f28a88a9226fe7a2 *R/rank.probability.R
 eb1dc0a0b6f4372d47e34da72bf483e7 *R/relative.effect.R
 2c7af325972d99ffd0d087c6f1f84511 *R/template.R
+6051f703302786adec3a580353549b32 *inst/extdata/anohe-breaking.gemtc
 2a24ff8c2f6e064727e1deaaf89392b3 *inst/extdata/cipriani-efficacy.gemtc
 4664d92f9fa233013b540b08e12a25b0 *inst/extdata/luades-smoking.gemtc
 07d3f52addad7c25713009a80b7a5a38 *inst/extdata/luades-smoking.samples.gz
@@ -61,7 +62,7 @@ b9cc22dfdf07205094f5177253d6cf34 *inst/tests/test_mtc.model_duparm.R
 5655a2cc12e2577d0c76e3c7904dce64 *inst/tests/test_relative.effect.R
 87927cb0ddb57177dfcbb5132283d044 *inst/tests/test_template.R
 625417252e9fe88b67709d749935f61c *inst/tests/test_write.mtc.network.R
-25899581be110e81c19ad2eb5d7e7be8 *man/blobbogram.Rd
+4b199caa113eee6c1345ddf89f2f8db9 *man/blobbogram.Rd
 1ddb3c28b99eb8597b23670eda67f41c *man/figures/parkinson.pdf
 fbad61b13fb4aab72e2e67801b14f44d *man/figures/parkinson.png
 145f451d78a242ecbe9e9cf5542ef3f4 *man/gemtc-package.Rd
