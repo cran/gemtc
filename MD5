@@ -1,6 +1,6 @@
-dc72ff5166bad5c466e0d6f7feb71dd0 *DESCRIPTION
+719310d2f3558c166ff7f78f8a5ccd57 *DESCRIPTION
 f0c1146c3c29e849a8a6fb7057bcbcf8 *NAMESPACE
-8d4f88dbf38cb473981079c7d159ff9c *NEWS
+fc64052867c88e94fc545f70838b2e9d *NEWS
 89686e3ae0eaa4dc6dfc571d0fdfa7b8 *R/anohe.R
 7e39bf2882579a655995d0afa39e0734 *R/blobbogram.R
 8c0643cf94b5fb05a5f53bb823796249 *R/code.R
@@ -15,7 +15,7 @@ a1cfc690cfa7510d148c1e4569acff9b *R/ll.poisson.log.R
 87d37fd3e6bc074988608049b91a172c *R/mtc.model.R
 187ebfe236935dfeb7c83ceb3a4145d1 *R/mtc.model.consistency.R
 58ea27f8cae4256423ca4416145407d7 *R/mtc.model.nodesplit.R
-427b9fd4704b1dff663e81634bef9949 *R/mtc.model.ume.R
+251921d18b84d0307bce177e835d56f5 *R/mtc.model.ume.R
 e9aa928aeb35801cd4ae77641144fe04 *R/mtc.model.use.R
 bcd1aaabdf4cb013c1dbce79f386f713 *R/mtc.network.R
 012a60de8b1d8ee5350be4cac5285567 *R/mtc.result.R
@@ -75,5 +75,5 @@ df0474878a352f1408e083a2e870144c *man/mtc.network.Rd
 632219d11b0b4ca8a84985c7fb6947a4 *man/rank.probability.Rd
 b047bb1d716265443276b21ae2e5e8e2 *man/relative.effect.Rd
 509fe557493ca75a2c2c3fa94106699e *src/Makevars
-398e5a69ad9edb4aba9564daf1521bb5 *src/rank.c
+bb40c0c36c7933641a46739b8d131499 *src/rank.c
 1ed77712785c26089d6f13a2b821e14e *tests/test.R
