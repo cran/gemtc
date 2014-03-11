@@ -1,12 +1,18 @@
 # Unrelated study effects model
 mtc.model.use <- function(model) {
+  model[['linearModel']] <- 'random'
+
   model[['data']] <- mtc.model.data(model)
   model[['data']][['nt']] <- NULL
   model[['data']][['t']] <- NULL
   model[['inits']] <- lapply(mtc.init(model), function(inits) {
-    list(
-      mu=inits[['mu']],
-      delta=inits[['delta']])
+    if (!is.null(inits[['mu']])) {
+      list(
+        mu=inits[['mu']],
+        delta=inits[['delta']])
+    } else {
+      list(delta=inits[['delta']])
+    }
   })
 
   model[['code']] <- mtc.model.code(model, c(), '', template='gemtc.model.use.template.txt')

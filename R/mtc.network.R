@@ -300,7 +300,7 @@ mtc.merge.data <- function(network) {
     treatment=as.treatment.factor(c(
       network[['data.ab']][['treatment']],
       network[['data.re']][['treatment']]), network),
-    stingsAsFactors=FALSE)
+    stringsAsFactors=FALSE)
 }
 
 mtc.studies.list <- function(network) {
@@ -322,11 +322,9 @@ has.indirect.evidence <- function(network, t1, t2) {
     all(c(t1, t2) %in% mtc.study.design(network, study))
   })
 
-  data <- rbind(network[['data.ab']], network[['data.re']])
-  not.t1ort2 <- data[['treatment']] != t1 & data[['treatment']] != t2
+  data <- mtc.merge.data(network)
   not.both <- !has.both[data[['study']]]
-  data <- data[not.both | not.t1ort2, , drop=FALSE]
-  data <- remove.onearm(data)
+  data <- data[not.both, , drop=FALSE]
 
   if (nrow(data) > 0) {
     n <- mtc.network(data)
@@ -351,10 +349,16 @@ mtc.comparisons <- function(network) {
 
   # Identify the unique "designs" (treatment combinations)
   design <- function(study) { mtc.study.design(network, study) }
-  designs <- unique(lapply(levels(data[['study']]), design))
+  designs <- unique(lapply(unique(data[['study']]), design))
 
   # Generate all pair-wise comparisons from each "design"
   comparisons <- do.call(rbind, lapply(designs, mtc.treatment.pairs))
+
+  # Make sure we include each comparison in only one direction
+  swp <- as.character(comparisons[['t1']]) > as.character(comparisons[['t2']])
+  tmp <- comparisons[['t1']]
+  comparisons[['t1']][swp] <- comparisons[['t2']][swp]
+  comparisons[['t2']][swp] <- tmp[swp]
 
   # Ensure the output comparisons are unique and always in the same order
   comparisons <- unique(comparisons)
@@ -400,7 +404,7 @@ print.mtc.network <- function(x, ...) {
 summary.mtc.network <- function(object, ...) {
   object <- fix.network(object)
   data <- mtc.merge.data(object)
-  studies <- levels(data[['study']])
+  studies <- unique(data[['study']])
   m <- sapply(object[['treatments']][['id']], function(treatment) {
     sapply(studies, function(study) {
       any(data[['study']] == study & data[['treatment']] == treatment)

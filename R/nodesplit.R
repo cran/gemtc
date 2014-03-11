@@ -48,7 +48,7 @@ nodesplit.rewrite.data.re <- function(data, t1, t2) {
     n <- length(old) - 1
     m <- length(ts)
     b <- cob.matrix(old, new)
-    mean <- c(NA, b %*% data$mean[-1])[1:m]
+    diff <- c(NA, b %*% data$diff[-1])[1:m]
 
     cov.m <- matrix(data$std.err[1], nrow=n, ncol=n)
     diag(cov.m) <- data$std.err[-1]
@@ -58,7 +58,7 @@ nodesplit.rewrite.data.re <- function(data, t1, t2) {
     treatment <- factor(ts, levels=levels(data$treatment))
     data.frame(study=rep(study, m),
                treatment=treatment,
-               mean=mean,
+               diff=diff,
                std.err=std.err)
   }
   studies <- unique(data$study)
@@ -74,7 +74,7 @@ nodesplit.rewrite.data.re <- function(data, t1, t2) {
       study.data <- rbind(cob(paste(study, '*', sep=''), study.data, c(t1, t2)),
                           cob(paste(study, '**', sep=''), study.data, ts))
     }
-    study.data
+    study.data[, c('study','treatment','diff','std.err')]
   })
   data <- do.call(rbind, per.study)
   data$study <- as.factor(data$study)
@@ -87,11 +87,11 @@ mtc.nodesplit.comparisons <- function(network) {
     if (has.indirect.evidence(network, comparison['t1'], comparison['t2'])) comparison else NULL
   })
   if (is.list(comparisons)) {
-    as.data.frame(do.call(rbind, comparisons))
+    as.data.frame(do.call(rbind, comparisons), stringsAsFactors=FALSE)
   } else if (is.null(comparisons)) {
-    data.frame(t1=character(), t2=character())
+    data.frame(t1=character(), t2=character(), stringsAsFactors=FALSE)
   } else {
-    as.data.frame(t(comparisons))
+    as.data.frame(t(comparisons), stringsAsFactors=FALSE)
   }
 }
 

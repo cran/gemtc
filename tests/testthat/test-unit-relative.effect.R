@@ -127,3 +127,24 @@ test_that("relative.effect is robust to missing sd.d", {
   out <- relative.effect(out, "A", preserve.extra=TRUE)
   expect_that(colnames(out$samples[[1]]), equals(c("d.A.B", "d.A.C", "d.A.D"))) #1
 })
+
+test_that("relative.effect is robust to leading columns", {
+  result <- dget(system.file("extdata/luades-smoking.samples.gz", package="gemtc"))
+  leading <- matrix(rep(255,nrow(result[['samples']][[1]])), dimnames=list(NULL, "deviance"))
+  for (i in 1:4) {
+    result[['samples']][[i]] <- as.mcmc(cbind(leading, result[['samples']][[i]]))
+  }
+
+  stats <- summary(relative.effect(result, "B", preserve.extra=FALSE))$summaries
+
+  expected <- textConnection('
+           Mean     SD  Naive.SE Time-series.SE
+  d.B.A -0.4965 0.4081 0.004563       0.004989
+  d.B.C  0.3394 0.4144 0.004634       0.004859
+  d.B.D  0.6123 0.4789 0.005354       0.005297
+  ')
+  expected <- as.matrix(read.table(expected, header=TRUE))
+  colnames(expected)[3] <- "Naive SE"
+  colnames(expected)[4] <- "Time-series SE"
+  expect_that(stats$statistics, equals(expected, tolerance=0.0001, scale=1))
+})

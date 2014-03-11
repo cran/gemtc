@@ -17,6 +17,8 @@ plot.mtc.result <- function(x, ...) {
 }
 
 forest.mtc.result <- function(x, ...) {
+  if (tolower(x[['model']][['type']]) != 'consistency') stop("Can only apply forest.mtc.result to consistency models")
+
   quantiles <- summary(x[['samples']])[['quantiles']]
   model <- x[['model']]
   stats <- quantiles[grep("^d\\.", rownames(quantiles)), , drop=FALSE]
@@ -39,8 +41,7 @@ forest.mtc.result <- function(x, ...) {
     ci.label=paste(ll.call('scale.name', model), "(95% CrI)"),
     log.scale=ll.call('scale.log', model),
     grouped=length(group.labels)>1, group.labels=group.labels,
-    left.label=params[['left.label']], right.label=params[['right.label']],
-    xlim=params[['xlim']])
+    ...)
 }
 
 as.mcmc.list.mtc.result <- function(x, ...) {

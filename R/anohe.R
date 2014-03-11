@@ -46,7 +46,11 @@ decompose.trials <- function(result) {
       })
     })
 
-    se <- sqrt(decompose.variance(V))
+    var <- decompose.variance(V)
+    se <- sqrt(var)
+    if (any(is.nan(se))) {
+      stop(paste("Decomposed variance ill-defined. Most likely the USE did not converge:", paste(capture.output(print(var)), collapse="\n"), sep="\n"))
+    }
 
     pairs <- all.pair.matrix(na)
     list(
@@ -63,7 +67,8 @@ decompose.trials <- function(result) {
     study <- study[!is.na(study)]
     na <- length(study)
     colIndexes <- grep(paste("delta[", i, ",", sep=""), colnames(study.samples), fixed=TRUE)
-    if (na > 2) {
+    stopifnot(length(colIndexes) == (na - 1)) # A bug in WinBUGS caused this to happen -- repeated variables
+    effects <- if (na > 2) {
       data <- decompose.study(
         study.samples[, colIndexes, drop=FALSE])
       ts <- matrix(study[all.pair.matrix(na)], ncol=2)
@@ -72,6 +77,19 @@ decompose.trials <- function(result) {
       samples <- study.samples[ , colIndexes, drop=FALSE]
       list(m=apply(samples, 2, mean), e=apply(samples, 2, sd), t=matrix(study, nrow=1))
     }
+
+    # make the baseline treatment consistent (i.e. in the same order as the
+    # basic parameters)
+    for (k in 1:length(effects[['m']])) {
+      t1 <- effects$t[k, 1]
+      t2 <- effects$t[k, 2]
+      if (t1 > t2) {
+        effects$t[k, 1] <- t2
+        effects$t[k, 2] <- t1
+        effects$m[k] <- -effects$m[k]
+      }
+    }
+    effects
   })
 
   # (mu1, prec1): posterior parameters
@@ -111,15 +129,11 @@ decompose.network <- function(network, result) {
   }))
 
   ta.network <- filter.network(network, function(row) { !(row['study'] %in% studies) })
-  mtc.network(data.ab=ta.network[['data.ab']], data.re=rbind(ta.network[['data.re']], data.re), treatments=network$treatments)
+  ta.data.re <- ta.network[['data.re']][ , c('study','treatment','diff','std.err')]
+  mtc.network(data.ab=ta.network[['data.ab']], data.re=rbind(ta.data.re, data.re), treatments=network$treatments)
 }
 
 mtc.anohe <- function(network, ...) {
-  args <- list(...)
-  if ('linearModel' %in% names(args)) {
-    stop('mtc.anohe currently does not support specifying "linearModel"')
-  }
-
   network <- fix.network(network)
 
   result.use <- mtc.model.run(network, type='use', ...)

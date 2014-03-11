@@ -1,3 +1,48 @@
+gemtc 0.6
+=========
+
+Released 2014-03-11
+
+New features:
+
+ * Customizable prior distribution for heterogeneity. The prior can be
+   set on the standard deviation, variance, or precision. It can use any
+   distribution supported by BUGS/JAGS. Informative priors for the log
+   odds ratio (based on Turner et al. 2012) are also available.
+ * Variance of the vague normal distributions for all other parameters
+   can be controlled using 'om.scale'. By default it is still
+   heuristically determined.
+ * Change handling of 4+-arm trials in node-splitting models and ANOHE
+   summary
+ * Enable linearModel='fixed' for mtc.anohe()
+ * Add literature references for various methods to gemtc-package
+ * Add mtc.data.studyrow() to convert the one-study-per-row format often
+   used in BUGS models to the one-arm-per-row format used by GeMTC
+
+Enhancements:
+
+ * Upgrade unit testing infrastructure to testthat >= 0.8
+ * Move validation tests into testthat infrastructure
+ * Add regression test suite that tries all summaries and plots on all
+   models to check whether they crash.
+ * General clean up of example and test data files
+
+Known issues:
+
+ * Models with relative-effect data from trials with 4 or more arms
+   can't be run using WinBUGS or OpenBUGS (#28). This seems to be due to
+   a BUGS-bug. A warning is produced, saying to use JAGS instead.
+
+Bugfixes:
+
+ * Fix empty first page on PDF output of some plots (#12)
+ * Fix ordering of generated data / initial values in models for
+   relative effect data (#21)
+ * Fix generating node-splitting models for relative effect data (#22)
+ * Fix mtc.nodesplit.comparisons getting confused when both relative
+   effect and arm-based data are present (#25)
+ * Fix duplicated parameters in UME models (#26)
+
 gemtc 0.5-3
 ===========
 
