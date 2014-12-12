@@ -1,13 +1,8 @@
 #include <R.h>
-#include <R_ext/BLAS.h>
-
-#include <math.h>
-#include <stdlib.h>
-
-#include <stdio.h>
+#include <Rinternals.h>
 
 typedef struct Matrix {
-    double * const data;
+    int * const data;
     int const nRow;
     int const nCol;
 } Matrix;
@@ -16,7 +11,7 @@ typedef struct Matrix {
  * @param i Row index.
  * @param j Column index.
  */
-static inline double *get(Matrix *m, int i, int j) {
+static inline int *get(Matrix *m, int i, int j) {
     return m->data + j * (m->nRow) + i;
 }
 
@@ -36,20 +31,32 @@ static inline void rank(double const *t, int *r, int n) {
 	}
 }
 
-void gemtc_rank_count(
-		double const *sData, int const *nIter, int const *nAlt,
-		double *cData) {
-	Matrix c = { cData, *nAlt, *nAlt };
+SEXP gemtc_rank_count(SEXP _t) {
+	int const nIter = ncols(_t);
+	int const nAlt = nrows(_t);
 
-	double const *t = sData; // alternative values
-	int r[*nAlt]; // alternative ranks
-	for (int k = 0; k < *nIter; ++k) {
-		rank(t, r, *nAlt); // rank the alternatives
+	_t = PROTECT(coerceVector(_t, REALSXP));
+	double const *t = REAL(_t);
 
-		for (int i = 0; i < *nAlt; ++i) {
+	SEXP _result = PROTECT(allocMatrix(INTSXP, nAlt, nAlt));
+	Matrix c = { INTEGER(_result), nAlt, nAlt };
+	for (int i = 0; i < nAlt; ++i) {
+		for (int j = 0; j < nAlt; ++j) {
+			*get(&c, i, j) = 0;
+		}
+	}
+
+	int r[nAlt]; // alternative ranks
+	for (int k = 0; k < nIter; ++k) {
+		rank(t, r, nAlt); // rank the alternatives
+
+		for (int i = 0; i < nAlt; ++i) {
 			*get(&c, r[i], i) += 1; // update rank counts
 		}
 
-		t += *nAlt;
+		t += nAlt;
 	}
+
+	UNPROTECT(2);
+	return _result;
 }
