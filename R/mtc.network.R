@@ -28,7 +28,8 @@ remove.onearm <- function(data, warn=FALSE) {
   }))
 
   if (warn && !all(sel)) {
-    warning(paste("Removing", sum(!sel), "one-arm studies"))
+    warning(paste("Removing", sum(!sel), "one-arm studies:",
+                  paste(data[!sel,'study'], collapse=", ")))
   }
   data[sel, , drop=FALSE]
 }
@@ -94,10 +95,10 @@ mtc.network <- function(
     description=description,
     treatments=treatments)
 
-  if (!is.null(data.ab)) {
+  if (!is.null(data.ab) && nrow(data.ab) > 0) {
     network <- c(network, list(data.ab=standardize.data(data.ab, levels(treatments[['id']]))))
   }
-  if (!is.null(data.re)) {
+  if (!is.null(data.re) && nrow(data.re) > 0) {
     network <- c(network, list(data.re=standardize.data(data.re, levels(treatments[['id']]), re.order=TRUE)))
   }
 
@@ -108,6 +109,13 @@ mtc.network <- function(
 }
 
 read.mtc.network <- function(file) {
+  # Check that the file exists and can be read.
+  # This is not best practice, but the XML parser throws an incredibly cryptic
+  # error if it can't read the file, so this seems better.
+  if (file.access(file, 4) == -1) {
+    stop(paste0("The file \"", file, "\" does not exist or can not be read."))
+  }
+
   doc <- XML::xmlInternalTreeParse(file)
   description <- unlist(XML::xpathApply(doc, "/network", XML::xmlGetAttr, "description"))
   type <- unlist(XML::xpathApply(doc, "/network", XML::xmlGetAttr, "type", "rate"))
@@ -240,8 +248,12 @@ mtc.validate.data.re <- function(data) {
   studies <- unique(data[['study']])
   ma <- sapply(studies, function(study) { sum(data[['study']] == study) > 2 })
   ma <- studies[ma]
-  if (!all(!is.na(data[['std.err']][data[['study']] %in% ma]))) {
-    stop('All multi-arm trials (> 2 arms) must have the std.err of the baseline specified')
+  ma.studies <- data[['study']] %in% ma
+  nobaseline <- is.na(data[['std.err']][ma.studies])
+  if (!all(!nobaseline)) {
+    stop(paste('All multi-arm trials (> 2 arms) must have the std.err of the baseline specified.',
+               'Constraint violated by:',
+               paste(data[['study']][ma.studies][nobaseline], collapse=", ")))
   }
 }
 
@@ -343,36 +355,47 @@ mtc.treatment.pairs <- function(treatments) {
   data.frame(t1=coerce.factor(t1, treatments), t2=coerce.factor(t2, treatments))
 }
 
+## Get all direct comparisons with the number of studies
+## measuring the direct comparison. This is like mtc.comparisons
+## but in addition the numbers are appended as an additional column.
+mtc.nr.comparisons <- function(network) {
+  m <- mtc.study.treatment.matrix(network)
+  comp <- mtc.comparisons(network)
+  cm <- as.matrix(comp)
+  nr <- aaply(cm, 1, function(co) {
+    sum(rowSums(m[,co, drop=FALSE]) == 2)
+  })
+  cbind(comp, nr)
+}
+
 # Get all comparisons with direct evidence from the data set.
 # Returns a (sorted) data frame with two columns (t1 and t2).
 mtc.comparisons <- function(network) {
+  ## Generate all pair-wise comparisons from each "design"
   data <- mtc.merge.data(network)
-
-  # Identify the unique "designs" (treatment combinations)
+  ## Identify the unique "designs" (treatment combinations)
   design <- function(study) { mtc.study.design(network, study) }
   designs <- unique(lapply(unique(data[['study']]), design))
-
-  # Generate all pair-wise comparisons from each "design"
   comparisons <- do.call(rbind, lapply(designs, mtc.treatment.pairs))
-
-  # Make sure we include each comparison in only one direction
+  ## Make sure we include each comparison in only one direction
   swp <- as.character(comparisons[['t1']]) > as.character(comparisons[['t2']])
   tmp <- comparisons[['t1']]
   comparisons[['t1']][swp] <- comparisons[['t2']][swp]
   comparisons[['t2']][swp] <- tmp[swp]
 
-  # Ensure the output comparisons are unique and always in the same order
-  comparisons <- unique(comparisons)
+  ## Ensure the output comparisons are always in the same order
   comparisons <- comparisons[order(comparisons[['t1']], comparisons[['t2']]), ,drop=FALSE]
-  row.names(comparisons) <- NULL
   comparisons[['t1']] <- as.treatment.factor(comparisons[['t1']], network)
   comparisons[['t2']] <- as.treatment.factor(comparisons[['t2']], network)
+  ## Ensure the output comparisons are unique
+  comparisons <- unique(comparisons)
+  row.names(comparisons) <- NULL
   comparisons
 }
 
 edges.create <- function(e, ...) {
-  e <- t(matrix(c(e[['t1']], e[['t2']]), ncol=2))
-  edges(as.vector(e), ...)
+  ed <- t(matrix(c(e[['t1']], e[['t2']]), ncol=2))
+  edges(as.vector(ed), weight=e[['nr']], ...)
 }
 
 graph.create <- function(v, e, ...) {
@@ -382,10 +405,11 @@ graph.create <- function(v, e, ...) {
   g
 }
 
-mtc.network.graph <- function(network) {
-  comparisons <- mtc.comparisons(network)
-  treatments <- network[['treatments']][['id']]
-  graph.create(treatments, comparisons, arrow.mode=0)
+mtc.network.graph <- function(network, include.nr.comparisons=FALSE) {
+    comp <- if (include.nr.comparisons) mtc.nr.comparisons else mtc.comparisons
+    comparisons <- comp(network)
+    treatments <- network[['treatments']][['id']]
+    graph.create(treatments, comparisons, arrow.mode=0)
 }
 
 ## mtc.network class methods
@@ -402,24 +426,34 @@ print.mtc.network <- function(x, ...) {
   }
 }
 
-summary.mtc.network <- function(object, ...) {
-  object <- fix.network(object)
+mtc.study.treatment.matrix <- function(network) {
+  object <- fix.network(network)
   data <- mtc.merge.data(object)
   studies <- unique(data[['study']])
-  m <- sapply(object[['treatments']][['id']], function(treatment) {
-    sapply(studies, function(study) {
+  m <- laply(object[['treatments']][['id']], function(treatment) {
+    laply(studies, function(study) {
       any(data[['study']] == study & data[['treatment']] == treatment)
-    })
-  })
+    }, .drop=TRUE)
+  }, .drop=FALSE)
+  m <- t(m)
   colnames(m) <- object[['treatments']][['id']]
+  m
+}
+
+summary.mtc.network <- function(object, ...) {
+  object <- fix.network(object)
+  m <- mtc.study.treatment.matrix(object)
   x <- as.factor(apply(m, 1, sum))
   levels(x) <- sapply(levels(x), function(y) { paste(y, "arm", sep="-") })
   list("Description"=paste("MTC dataset: ", object[['description']], sep=""),
-     "Studies per treatment"=apply(m, 2, sum),
-     "Number of n-arm studies"=summary(x))
+       "Studies per treatment"=apply(m, 2, sum),
+       "Number of n-arm studies"=summary(x),
+       "Studies per treatment comparison"=mtc.nr.comparisons(object)
+       )
 }
 
 plot.mtc.network <- function(x, layout=igraph::layout.circle, ...) {
   x <- fix.network(x)
-  igraph::plot.igraph(mtc.network.graph(x), layout=layout, ...)
+  g <- mtc.network.graph(x, TRUE)
+  igraph::plot.igraph(g, layout=layout, edge.width=E(g)$weight, ...)
 }

@@ -1,11 +1,11 @@
-2070a18efbf51ffc89efcf2a6f462ea7 *DESCRIPTION
-1800c995d4cddfe374d09b887c1edce0 *NAMESPACE
-18e726ac09df32f5316fd1c63aad7fd3 *NEWS
-a79761f39bd3653bdc966bb71df9f4ce *R/anohe.R
-c20cdc62ef9952f9e6e79de55ca5dbae *R/blobbogram.R
+2ea1a3ecaec46331bdff017153d469bb *DESCRIPTION
+56d61cd61821e3a9daf17597eb1f2c57 *NAMESPACE
+3924f0d446a6d2a904ba036709d65784 *NEWS
+e4e4f99ee931a72f5131cb1c001a3e53 *R/anohe.R
+536792f699f5a6f07e7fe58cb714593f *R/blobbogram.R
 d2874f1ab22c5eacf252f32ffb0f85cc *R/code.R
 dd11821c50f31c10198d86fa0f7879e9 *R/data.R
-9dd4c2bb85d68c6778d974d2c6db5925 *R/inits.R
+10d4d813189d0a01680ef0afaf0529c1 *R/inits.R
 59f5a240ad8a6e9531d45fae8994fd40 *R/ll.binom.cloglog.R
 de3e7d1faa4201fe834427a082e27812 *R/ll.binom.logit.R
 2a747047f962e2ea8d6856e3d418004d *R/ll.call.R
@@ -18,7 +18,7 @@ e4dd3fa4e4cde58137f97f57a674dd87 *R/mtc.data.studyrow.R
 c8e3e8a8f4a287d824b6dfaa068341c8 *R/mtc.model.nodesplit.R
 d2d363b6cec75dda663ed8340cc4665b *R/mtc.model.ume.R
 4eaddd2762a358c98ac23afa9ba43cd0 *R/mtc.model.use.R
-e606094ef1d4c46ed8a371ff25be1412 *R/mtc.network.R
+e4f5093b85b80205540b275f9f51384e *R/mtc.network.R
 87279cba35f1c78fcc6b1d660da78042 *R/mtc.result.R
 45f01127ed0316c20daeceacf2cb83cf *R/mtc.run.R
 c3dd5f7b94166d53258e586b749b7e0f *R/nodesplit.R
@@ -40,7 +40,7 @@ ed3bc4198366a9c856a1b9deb73f744f *inst/gemtc.model.use.template.txt
 5af03c0b637cb8b2cffacbb0ec25ec07 *inst/gemtc.releffect.likelihood.r2.txt
 42fd5bcbd6624ad6d45164e7d38082d6 *inst/gemtc.releffect.likelihood.rm.txt
 8ab683004507cb1b59c733585206bc77 *inst/gemtc.study.baseline.priors.txt
-7730b79955f2b9abd57403fa4effeac3 *man/blobbogram.Rd
+09d5dd89b651ea58f45bbcdc6a64c3d1 *man/blobbogram.Rd
 1ddb3c28b99eb8597b23670eda67f41c *man/figures/parkinson.pdf
 fbad61b13fb4aab72e2e67801b14f44d *man/figures/parkinson.png
 666c57fc47a8e05dc1ed5bc0ffdcc34b *man/gemtc-package.Rd
@@ -116,6 +116,8 @@ d69feb9da9280c184ec022919e4d7f10 *tests/testthat/test-unit-mtc.model_columns.R
 b9cc22dfdf07205094f5177253d6cf34 *tests/testthat/test-unit-mtc.model_duparm.R
 3e90e3591ec921e0baf12a7bc9e6b66f *tests/testthat/test-unit-mtc.model_inits.R
 4d90ca94dd22780009d1d32bc0c1a5da *tests/testthat/test-unit-mtc.network_data.re.R
+5f5621ecc70134ac33b29d4360f6c93a *tests/testthat/test-unit-mtc.nr.comparisons.R
+38e0e46eda7295ba7ab5710b9ae8e75b *tests/testthat/test-unit-mtc.study.treatment.matrix.R
 24df95deb35bc23a9887aab280038e6c *tests/testthat/test-unit-nodesplit.R
 0cc7e1e7a1dd14df596ce921742bcf97 *tests/testthat/test-unit-read.mtc.network.R
 c0f28ea3bb8fe677dd4028adfef2199a *tests/testthat/test-unit-relative.effect.R
