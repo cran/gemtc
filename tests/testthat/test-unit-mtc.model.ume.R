@@ -48,7 +48,7 @@ test_that("mtc.model.ume warns about mutli-arm trials", {
 })
 
 test_that("Vertices agree between mtc.network.graph and ume model$graph", {
-    network <- read.mtc.network(system.file("extdata/luades-thrombolytic.gemtc", package='gemtc'))
+    network <- thrombolytic
     suppressWarnings(model <- mtc.model(network, type='ume'))
     graph <- mtc.network.graph(network)
     expect_that(V(model$graph)$name, equals(V(graph)$name))
@@ -90,4 +90,18 @@ test_that("RE data will not introduce duplicate basic parameters", {
   expect_that(grep("d\\[1, 3\\] <- d.A.C", model$code), equals(1))
   expect_that(grep("d\\[2, 3\\] <- d.B.C", model$code), equals(1))
   expect_that(grep("d\\[3, 1\\] <- -d.A.C", model$code), equals(1))
+})
+
+test_that("func.param.matrix was implemented correctly", {
+  model <- list(
+    'type'='ume',
+    'graph'=igraph::make_graph(c('A','B','A','C','B','C','B','D')))
+
+  expect_equal(matrix(c(1,0,0,0), nrow=4, dimnames=list(NULL, 'd.A.B')),
+               mtc.model.call('func.param.matrix', model, t1='A', t2='B'))
+  expect_equal(matrix(c(1,0,0,0,0,1,0,0), nrow=4, dimnames=list(NULL, c('d.A.B', 'd.A.C'))),
+               mtc.model.call('func.param.matrix', model, t1='A', t2=c('B', 'C')))
+  expect_equal(matrix(c(0,0,0,-1), nrow=4, dimnames=list(NULL, c('d.D.B'))),
+               mtc.model.call('func.param.matrix', model, t1='D', t2='B'))
+  expect_error(mtc.model.call('func.param.matrix', model, t1='A', t2='D'))
 })

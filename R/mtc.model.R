@@ -52,7 +52,7 @@ mtc.model.call <- function(fn, model, ...) {
 }
 
 mtc.model.defined <- function(model) {
-  fns <- c('mtc.model', 'mtc.model.name')
+  fns <- c('mtc.model', 'mtc.model.name', 'func.param.matrix')
   fns <- paste(fns, model[['type']], sep='.')
   all(exists(fns, mode='function'))
 }
@@ -61,7 +61,9 @@ mtc.model <- function(network, type="consistency",
     factor=2.5, n.chain=4,
     likelihood=NULL, link=NULL,
     linearModel="random",
-    om.scale=NULL, hy.prior=mtc.hy.prior("std.dev", "dunif", 0, "om.scale"),
+    om.scale=NULL,
+    hy.prior=mtc.hy.prior("std.dev", "dunif", 0, "om.scale"),
+    dic=TRUE,
     ...) {
   if (!inherits(network, "mtc.network")) {
     stop('Given network is not an mtc.network')
@@ -98,7 +100,8 @@ mtc.model <- function(network, type="consistency",
     linearModel = linearModel,
     network = network,
     n.chain = n.chain,
-    var.scale = factor)
+    var.scale = factor,
+    dic = dic)
 
   if (!mtc.model.defined(model)) {
     stop(paste(type, 'is not an MTC model type.'))
@@ -142,6 +145,8 @@ mtc.model <- function(network, type="consistency",
       ', link = ', model[['link']], ' not found!', sep=''))
   }
 
+  ll.call('validate.data', model, network[['data.ab']])
+
   model[['om.scale']] <- if (!is.null(om.scale)) om.scale else guess.scale(model)
   model[['hy.prior']] <- hy.prior
 
@@ -179,7 +184,7 @@ non.edges <- function(g, comparisons) {
 mtc.basic.parameters <- function(model) {
   graph <- if (!is.null(model[['tree']])) model[['tree']] else model[['graph']]
   sapply(E(graph), function(e) {
-    v <- get.edge(graph, e)
+    v <- ends(graph, e, names=FALSE)
     paste("d", V(graph)[v[1]]$name, V(graph)[v[2]]$name, sep=".")
   })
 }

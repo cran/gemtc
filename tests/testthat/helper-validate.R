@@ -38,6 +38,10 @@ compare.summaries <- function(s1, s2) {
   d.idx <- grep("^d\\.", names(s1$effectiveSize))
   sd.idx <- grep("^sd\\.", names(s1$effectiveSize))
 
+  # Force statistics to be matrix
+  if (is.vector(s1$summary$statistics)) s1$summary$statistics <- t(s1$summary$statistics)
+  if (is.vector(s2$summary$statistics)) s2$summary$statistics <- t(s2$summary$statistics)
+
   # Test equality of means
   mu1 <- s1$summary$statistics[, 'Mean']
   mu2 <- s2$summary$statistics[, 'Mean']
@@ -83,10 +87,6 @@ compare.summaries <- function(s1, s2) {
   }
 }
 
-get.sampler <- function() {
-  if (exists("gemtc.test.sampler")) gemtc.test.sampler else NA
-}
-
 replicate.example <- function(name, network, type="consistency", linearModel="random", likelihood="binom", link="logit") {
   s1 <- dget(paste0("../data/", name, '.summaries.txt'))
 
@@ -100,7 +100,7 @@ replicate.example <- function(name, network, type="consistency", linearModel="ra
     linearModel=linearModel,
     n.chain=4)
   capture.output(
-    result <- mtc.run(model, sampler=get.sampler(), n.adapt=n.adapt, n.iter=n.iter, thin=thin)
+    result <- mtc.run(model, n.adapt=n.adapt, n.iter=n.iter, thin=thin)
   )
   s2 <- generate.summaries(result)
   list(s1=s1, s2=s2)

@@ -6,13 +6,7 @@ mtc.model.use <- function(model) {
   model[['data']][['nt']] <- NULL
   model[['data']][['t']] <- NULL
   model[['inits']] <- lapply(mtc.init(model), function(inits) {
-    if (!is.null(inits[['mu']])) {
-      list(
-        mu=inits[['mu']],
-        delta=inits[['delta']])
-    } else {
-      list(delta=inits[['delta']])
-    }
+    inits[-which(names(inits) == "sd.d")]
   })
 
   model[['code']] <- mtc.model.code(model, c(), '', template='gemtc.model.use.template.txt')

@@ -7,40 +7,51 @@ print.mtc.result <- function(x, ...) {
 summary.mtc.result <- function(object, ...) {
   scale.log <- if (ll.call('scale.log', object[['model']])) 'Log ' else ''
   scale.name <- ll.call('scale.name', object[['model']])
-  list('measure'=paste(scale.log, scale.name, sep=''),
+  rval <- list('measure'=paste0(scale.log, scale.name),
        'summaries'=summary(object[['samples']]),
-       'DIC'=object[['dic']])
+       'DIC'=unlist(object[['deviance']][c('Dbar', 'pD', 'DIC')]))
+  class(rval) <- 'summary.mtc.result'
+  rval
+}
+
+print.summary.mtc.result <- function(x, ...) {
+  cat(paste("\nResults on the", x[['measure']], "scale\n"))
+  print(x[['summaries']])
+  cat("3. Model fit (residual deviance):\n\n")
+  print(x[['DIC']])
+  cat("\n")
 }
 
 plot.mtc.result <- function(x, ...) {
   plot(x[['samples']], ...)
 }
 
-forest.mtc.result <- function(x, ...) {
+forest.mtc.result <- function(x, use.description=FALSE, ...) {
   if (tolower(x[['model']][['type']]) != 'consistency') stop("Can only apply forest.mtc.result to consistency models")
 
-  quantiles <- summary(x[['samples']])[['quantiles']]
+  varnames <- colnames(x[['samples']][[1]])
+  samples <- as.matrix(x[['samples']][, grep("^d\\.", varnames)])
+  stats <- t(apply(samples, 2, quantile, probs=c(0.025, 0.5, 0.975)))
   model <- x[['model']]
-  stats <- quantiles[grep("^d\\.", rownames(quantiles)), , drop=FALSE]
-  comps <- extract.comparisons(rownames(stats))
+  network <- model[['network']]
+  comps <- extract.comparisons(varnames)
   groups <- comps[,1]
   group.names <- unique(groups)
-  group.labels <- rep("", length(group.names))
-  #group.labels <- paste("Relative to ", group.names)
+  group.labels <- paste("Compared with", if (use.description) treatment.id.to.description(network, group.names) else group.names)
   names(group.labels) <- group.names
   params <- list(...)
 
   data <- data.frame(
-    id=paste(comps[,2], comps[,1], sep=" vs "),
-    pe=stats[,3], ci.l=stats[,1], ci.u=stats[,5],
+    id=if (use.description) treatment.id.to.description(network, comps[,2]) else comps[,2],
+    pe=stats[,2], ci.l=stats[,1], ci.u=stats[,3],
     group=groups, style="normal")
 
   blobbogram(data,
     columns=c(), column.labels=c(),
-    id.label="Comparison",
+    id.label="",
     ci.label=paste(ll.call('scale.name', model), "(95% CrI)"),
     log.scale=ll.call('scale.log', model),
-    grouped=length(group.labels)>1, group.labels=group.labels,
+    grouped=TRUE, group.labels=group.labels,
     ...)
 }
 

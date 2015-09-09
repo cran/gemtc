@@ -18,15 +18,16 @@ If left empty and t1 is a single treatment, relative effects of all treatments e
 }
 \value{
   Returns an \code{mtc.results} object containing the calculated relative effects.
+
+  Note that this method stores the raw samples, which may result in excessive memory usage. You may want to consider using \code{\link{relative.effect.table}} instead.
 }
 \author{Gert van Valkenhoef, Joël Kuiper}
 \seealso{
-  \code{\link{rank.probability}}
+  \code{\link{rank.probability}},
+  \code{\link{relative.effect.table}}
 }
 \examples{
-file <- system.file("extdata/luades-smoking.gemtc", package="gemtc")
-network <- read.mtc.network(file)
-model <- mtc.model(network)
+model <- mtc.model(smoking)
 # To save computation time we load the samples instead of running the model
 \dontrun{results <- mtc.run(model)}
 results <- dget(system.file("extdata/luades-smoking.samples.gz", package="gemtc"))

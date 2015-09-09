@@ -13,7 +13,7 @@ The \code{mtc.model} function generates network meta-analysis models from an \co
 mtc.model(network, type = "consistency", factor = 2.5, n.chain = 4,
   likelihood=NULL, link=NULL, linearModel="random",
   om.scale=NULL, hy.prior=mtc.hy.prior("std.dev", "dunif", 0, "om.scale"),
-  ...)
+  dic=TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,6 +27,7 @@ mtc.model(network, type = "consistency", factor = 2.5, n.chain = 4,
 model, or "fixed" for a fixed effect model.}
   \item{om.scale}{Outcome measure scale. Represents a "very large" difference on the analysis' outcome scale. This is used to set vague priors. For the log odds-ratio, values between 2 and 5 are considered reasonable. For continuous outcomes, this depends heavily on the specific outcome. If left unspecified, it is determined from the data.}
   \item{hy.prior}{Heterogeneity prior. See \code{\link{mtc.hy.prior}}.}
+  \item{dic}{When set to TRUE, deviance and fitted values will be monitored to allow computation of the Deviance Information Criterion (DIC) at residual.}
   \item{...}{Additional arguments to be passed to the type-specific model generation function.}
 }
 \value{
@@ -45,6 +46,7 @@ These elements determine the model run by JAGS/BUGS:
   \item{data}{Data in JAGS/BUGS compatible format}
   \item{inits}{Initial values in JAGS/BUGS compatible format}
   \item{monitors}{The nodes of the JAGS/BUGS model to monitor}
+  \item{dic}{Whether to compute the DIC (necessary nodes will be monitored automatically)}
 These latter fields can be modified to alter the statistical model, but such changes may break the model or assumptions made elsewhere in the package.
 }
 \details{
@@ -63,6 +65,11 @@ These likelihood/links are supported:
   Required columns \code{[responders, sampleSize]}.
 
   Result: (log) odds ratio.}
+  \item{binom/log: for dichotomous data.
+
+  Required columns \code{[responders, sampleSize]}.
+
+  Result: (log) risk ratio.}
   \item{binom/cloglog: for rate (survival) data - equal follow-up in each arm.
 
   Required columns \code{[responders, sampleSize]}.
@@ -74,6 +81,7 @@ These likelihood/links are supported:
 
   Result: (log) hazard ratio.}
 }
+Most likelihood/links follow \link[=gemtc-package]{[Dias et al. 2013a]}, and the binom/log model follows \link[=gemtc-package]{[Warn et al. 2002]}.
 
 The following model types are supported:
 \itemize{
@@ -112,9 +120,7 @@ The default up-to version 0.1-2 was \code{igraph::layout.kamada.kawai} but could
 \code{\link{mtc.network}}, \code{\link{mtc.run}}
 }
 \examples{
-file <- system.file("extdata/parkinson.gemtc", package="gemtc")
-network <- read.mtc.network(file)
-model <- mtc.model(network)
+model <- mtc.model(parkinson)
 plot(model)
 summary(model)
 }

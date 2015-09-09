@@ -14,6 +14,12 @@ The resulting \code{mtc.results} object can be coerced to an \code{mcmc.list} fo
 }
 \usage{
 mtc.run(model, sampler = NA, n.adapt = 5000, n.iter = 20000, thin = 1)
+
+\method{summary}{mtc.result}(object, ...)
+\method{plot}{mtc.result}(x, ...)
+\method{forest}{mtc.result}(x, use.description=FALSE, ...)
+\method{print}{mtc.result}(x, ...)
+\method{as.mcmc.list}{mtc.result}(x, ...)
 }
 \arguments{
   \item{model}{An object of S3 class \code{mtc.model} describing a network meta-analysis model.}
@@ -25,6 +31,11 @@ When unspecified it will try \code{'rjags'}, \code{'BRugs'}, and \code{'R2WinBUG
   \item{n.adapt}{Amount of adaptation (or tuning) iterations.}
   \item{n.iter}{Amount of simulation iterations.}
   \item{thin}{Thinning factor.}
+
+  \item{object}{Object of S3 class \code{mtc.result}.}
+  \item{x}{Object of S3 class \code{mtc.result}.}
+  \item{use.description}{Display treatment descriptions instead of treatment IDs.}
+  \item{...}{Additional arguments.}
 }
 \value{
 An object of class \code{mtc.result}. This is a list with the following elements: 
@@ -47,17 +58,18 @@ The \code{\link{rank.probability}} function calculates rank probabilities for co
 
 \author{Gert van Valkenhoef, Joël Kuiper}
 \seealso{
-\code{\link{mtc.model}},
+\code{\link{mtc.model}}
+
+\code{\link{relative.effect.table}},
 \code{\link{relative.effect}},
-\code{\link{rank.probability}},
+\code{\link{rank.probability}}
+
 \code{coda::gelman.diag},
 \code{coda::gelman.plot}
 }
 
 \examples{
-file <- system.file("extdata/luades-smoking.gemtc", package="gemtc")
-network <- read.mtc.network(file)
-model <- mtc.model(network)
+model <- mtc.model(smoking)
 
 \dontrun{results <- mtc.run(model, thin=10)}
 results <- dget(system.file("extdata/luades-smoking.samples.gz", package="gemtc"))
