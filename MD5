@@ -1,6 +1,6 @@
-2882f3a0a81ad4947a8786c7ee48f34f *DESCRIPTION
+99dcc59681ffe42d80b66953ed06496d *DESCRIPTION
 93a4c97f7a9a31e5b12cd8db403abd57 *NAMESPACE
-03ebcc21ebb0c10ab3326c21b51dcca1 *NEWS
+74a5917cb08d3bd7584c857e347e3222 *NEWS
 e4e4f99ee931a72f5131cb1c001a3e53 *R/anohe.R
 d284b5b06675e86f1f5c18d5433872c8 *R/blobbogram.R
 3444a823fb5ac9414c07e9488aed03d2 *R/code.R
@@ -46,7 +46,7 @@ c0a9f05b0f655e1be10c0682d55d89d5 *inst/extdata/parkinson.ns.rds
 257297d99172c638473da285a049da8d *inst/gemtc.fixedeffect.txt
 e1fa641e668fd909818609ce4d8f68ff *inst/gemtc.model.template.txt
 ed3bc4198366a9c856a1b9deb73f744f *inst/gemtc.model.use.template.txt
-72026394fb99ab379b0814519d350d05 *inst/gemtc.randomeffects.txt
+ab35f03e0811108dff9c4ee90ad5357b *inst/gemtc.randomeffects.txt
 5258eeff2ae4c0c9856bce4dbbb50e58 *inst/gemtc.releffect.likelihood.r2.txt
 3194b40a332b16aa41b68ae6c163565e *inst/gemtc.releffect.likelihood.rm.txt
 8ab683004507cb1b59c733585206bc77 *inst/gemtc.study.baseline.priors.txt
