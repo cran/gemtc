@@ -6,7 +6,7 @@ model {
 	# Likelihood for contrast-based data (multivariate for multi-arm trials)
 	$releffect.rm$
 
-	$linearModel$
+	$heterogeneityModel$
 
 	# Relative effect matrix
 	$relativeEffectMatrix$
@@ -18,6 +18,5 @@ model {
 
 	# Effect parameter priors
 	$relativeEffectPriors$
-
-	foo <- ns.a + ns.r2 + ns.rm # to please WinBUGS
+	$regressionPriors$
 }

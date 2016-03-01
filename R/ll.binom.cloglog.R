@@ -20,9 +20,8 @@ mtc.rel.mle.binom.cloglog <- function(data, correction.force=TRUE, correction.ty
   c(e2['mean'] - e1['mean'], sqrt(e1['sd']^2 + e2['sd']^2))
 }
 
-mtc.code.likelihood.binom.cloglog <- function() {
-paste("r[i, k] ~ dbin(p[i, k], n[i, k])
-cloglog(p[i, k]) <- mu[i] + delta[i, k]", deviance.code.binom, sep="\n")
+mtc.code.likelihood.binom.cloglog <- function(powerAdjust) {
+  paste("cloglog(p[i, k]) <- $armLinearModel$", likelihood.code.binom[powerAdjust + 1], sep="\n")
 }
 
 fitted.values.parameter.binom.cloglog <- fitted.values.parameter.binom
@@ -43,7 +42,7 @@ inits.info.binom.cloglog <- function() {
 required.columns.ab.binom.cloglog <- required.columns.counts
 validate.data.binom.cloglog <- validate.data.counts
 study.baseline.priors.binom.cloglog <- function() {
-"for (i in 1:ns.a) {
+"for (i in studies.a) {
   mu[i] <- cloglog(p.base[i])
   p.base[i] ~ dunif(0, 1)
 }

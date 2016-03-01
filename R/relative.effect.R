@@ -1,10 +1,18 @@
-tree.relative.effect <- function(g, t1, t2) {
+#' @include stopIfNotConsistent.R
+#' @include regression.R
+
+treatment.pairs <- function(t1, t2, ts) {
   if((is.null(t2) || length(t2) == 0) && length(t1) == 1) {
-    t2 <- V(g)[V(g) != as.numeric(t1)]
+    t2 <- ts[ts != as.numeric(t1)]
   }
   if(length(t1) > length(t2)) t2 <- rep(t2, length.out=length(t1))
   if(length(t2) > length(t1)) t1 <- rep(t1, length.out=length(t2))
-  pairs <- matrix(c(t1, t2), ncol=2)
+  matrix(c(t1, t2), ncol=2)
+}
+
+# basic parameters are rows, derived parameters (i.e. the relative effects) are columns
+tree.relative.effect <- function(g, t1, t2) {
+  pairs <- treatment.pairs(t1, t2, V(g))
   paths <- apply(pairs, 1, function(rel) {
     p <- suppressWarnings(get.shortest.paths(g, rel[1], rel[2], mode='all'))
     if (is.list(p) && "vpath" %in% names(p)) { p <- p$vpath }
@@ -27,9 +35,9 @@ tree.relative.effect <- function(g, t1, t2) {
 
   # Ensure paths is a matrix, since apply() will simplify to a vector if
   # either ncol==1 or nrow==1
-  paths <- matrix(as.numeric(paths), ncol=length(t1), nrow=length(E(g)))
+  paths <- matrix(as.numeric(paths), nrow=length(E(g)))
 
-  colnames(paths) <-  apply(pairs, 1, function(pair) {
+  colnames(paths) <- apply(pairs, 1, function(pair) {
     pair <- V(g)[pair]$name
     paste('d', pair[1], pair[2], sep='.')
   })
@@ -54,8 +62,8 @@ spanning.tree.mtc.result <- function(result) {
   graph.create(network[['treatments']][['id']], parameters, arrow.mode=2, color="black", lty=1)
 }
 
-relative.effect <- function(result, t1, t2 = c(), preserve.extra=TRUE) {
-  if (tolower(result[['model']][['type']]) != 'consistency') stop("Can only apply relative.effect to consistency models")
+relative.effect <- function(result, t1, t2 = c(), preserve.extra=TRUE, covariate=NA) {
+  stopIfNotConsistent(result, 'relative.effect')
 
   # Build relative effect transformation matrix
   network <- result[['model']][['network']]
@@ -68,7 +76,26 @@ relative.effect <- function(result, t1, t2 = c(), preserve.extra=TRUE) {
   }
   effects <- tree.relative.effect(g, t1, t2)
 
-  parameters <- grep("^d\\.", colnames(result[['samples']][[1]]))
+  parnames <- colnames(result[['samples']][[1]])
+  parameters <- grep("^d\\.", parnames)
+
+  if (result[['model']][['type']] == 'regression' && !is.na(covariate)) {
+    model <- result[['model']]
+    regressor <- model[['regressor']]
+
+    if (regressor[['type']] == 'binary' && !(covariate %in% 0:1)) {
+      stop("Invalid value for binary covariate")
+    }
+
+    nt <- nrow(model[['network']][['treatments']])
+    nc <- length(model[['regressor']][['classes']])
+    regression.parameters <- sapply(regressionParams(regressor, nt, nc), function(p) { which(parnames == p) })
+    parameters <- c(parameters, regression.parameters)
+
+    transform <- regressionAdjustMatrix(t1, t2, regressor, nt)
+    transform <- transform * (covariate - regressor[['center']]) / regressor[['scale']]
+    effects <- rbind(effects, transform)
+  }
 
   # Apply tranformation to each chain
   samples <- as.mcmc.list(lapply(result[['samples']], function(chain) {
@@ -81,7 +108,8 @@ relative.effect <- function(result, t1, t2 = c(), preserve.extra=TRUE) {
   effects <- list(
     samples=samples,
     model=result[['model']],
-    sampler=result[['sampler']])
+    sampler=result[['sampler']],
+    covariate=covariate)
 
   class(effects) <- "mtc.result"
   effects

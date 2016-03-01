@@ -18,9 +18,8 @@ mtc.rel.mle.binom.log <- function(data, correction.force=TRUE, correction.type="
   c(e2['mean'] - e1['mean'], sqrt(e1['sd']^2 + e2['sd']^2))
 }
 
-mtc.code.likelihood.binom.log <- function() {
-paste("r[i, k] ~ dbin(p[i, k], n[i, k])
-log(p[i, k]) <- min(mu[i] + delta[i, k], -1E-16)", deviance.code.binom, sep="\n")
+mtc.code.likelihood.binom.log <- function(powerAdjust) {
+  paste("log(p[i, k]) <- min($armLinearModel$, -1E-16)", likelihood.code.binom[powerAdjust + 1], sep="\n")
 }
 
 fitted.values.parameter.binom.log <- fitted.values.parameter.binom
@@ -42,7 +41,7 @@ required.columns.ab.binom.log <- required.columns.counts
 validate.data.binom.log <- validate.data.counts
 
 study.baseline.priors.binom.log <- function() {
-"for (i in 1:ns.a) {
+"for (i in studies.a) {
   mu[i] <- log(p.base[i])
   p.base[i] ~ dunif(0, 1)
 }

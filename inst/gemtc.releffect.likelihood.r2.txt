@@ -1,6 +1,9 @@
-for(i in (ns.a + 1):(ns.a + ns.r2)) {
-	m[i, 2] ~ dnorm(delta[i, 2], prec[i, 2])
-	prec[i, 2] <- pow(e[i, 2], -2)
+for(i in studies.r2) {
+	for (k in 2:na[i]) {
+		mest[i, k] <- $relLinearModel$
+	}
+	m[i, 2] ~ dnorm(mest[i, 2], prec[i, 2])
+	prec[i, 2] <- 1 / (e[i, 2] * e[i, 2])
 
-	dev[i, 1] <- pow(m[i, 2] - delta[i, 2], 2) * prec[i, 2]
+	dev[i, 1] <- pow(m[i, 2] - mest[i, 2], 2) * prec[i, 2]
 }

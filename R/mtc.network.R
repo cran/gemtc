@@ -56,7 +56,7 @@ check.duplicated.treatments <- function(network, warn=FALSE) {
 
 mtc.network <- function(
   data.ab=data, treatments=NULL, description="Network",
-  data.re=NULL, data=NULL
+  data.re=NULL, studies=NULL, data=NULL
 ) {
   if (is.null(data.ab) && is.null(data.re)) {
     stop("Either `data.ab' or `data.re' (or both) must be specified")
@@ -106,6 +106,10 @@ mtc.network <- function(
   }
   if (!is.null(data.re) && nrow(data.re) > 0) {
     network <- c(network, list(data.re=standardize.data(data.re, levels(treatments[['id']]), re.order=TRUE)))
+  }
+
+  if (!is.null(studies) && nrow(studies) > 0) {
+    network <- c(network, list(studies=studies))
   }
 
   mtc.network.validate(network)
@@ -324,6 +328,10 @@ print.mtc.network <- function(x, ...) {
   if (!is.null(x[['data.re']])) {
     cat('Relative effect data: \n')
     print(x[['data.re']])
+  }
+  if (!is.null(x[['studies']])) {
+    cat('Study-level data: \n')
+    print(x[['studies']])
   }
 }
 

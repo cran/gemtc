@@ -25,6 +25,8 @@ S3method(plot, mtc.result)
 S3method(as.mcmc.list, mtc.result)
 S3method(forest, mtc.result)
 
+S3method(print, summary.mtc.result)
+
 S3method(print, mtc.anohe)
 S3method(plot, mtc.anohe)
 S3method(summary, mtc.anohe)
@@ -49,11 +51,12 @@ S3method(print, mtc.relative.effect.table)
 S3method(forest, mtc.relative.effect.table)
 
 export(
-	read.mtc.network, write.mtc.network, mtc.network, mtc.data.studyrow,
+	mtc.network, mtc.data.studyrow, read.mtc.network,
 	mtc.model, mtc.hy.prior, mtc.hy.empirical.lor,
 	mtc.run,
 	relative.effect, rank.probability, relative.effect.table,
 	blobbogram, forest,
+	plotCovariateEffect,
 	mtc.anohe,
 	mtc.nodesplit, mtc.nodesplit.comparisons,
 	ll.call)

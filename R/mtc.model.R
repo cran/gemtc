@@ -1,50 +1,6 @@
+#'@include mtc.hy.prior.R
+
 ## mtc.model class methods
-
-as.character.mtc.hy.prior <- function(x, ...) {
-  type <- x[['type']]
-  distr <- x[['distr']]
-  args <- x[['args']]
-  
-  expr <- paste0(distr, "(", paste(args, collapse=", "), ")")
-  if (type == "std.dev") {
-    paste0("sd.d ~ ", expr, "\ntau.d <- pow(sd.d, -2)")
-  } else if (type == "var") {
-    paste0("var.d ~ ", expr, "\nsd.d <- sqrt(var.d)\ntau.d <- 1 / var.d")
-  } else {
-    paste0("tau.d ~ ", expr, "\nsd.d <- sqrt(1 / tau.d)")
-  }
-}
-
-mtc.hy.prior <- function(type, distr, ...) {
-  stopifnot(class(type) == "character")
-  stopifnot(length(type) == 1)
-  stopifnot(type %in% c('std.dev', 'var', 'prec'))
-
-  obj <- list(type=type, distr=distr, args=list(...))
-  class(obj) <- "mtc.hy.prior"
-  obj
-}
-
-hy.lor.outcomes <- c('mortality', 'semi-objective', 'subjective')
-hy.lor.comparisons <- c('pharma-control', 'pharma-pharma', 'non-pharma')
-
-hy.lor.mu <- matrix(
-  c(-4.06, -3.02, -2.13, -4.27, -3.23, -2.34, -3.93, -2.89, -2.01),
-  ncol=3, nrow=3,
-  dimnames=list(hy.lor.outcomes, hy.lor.comparisons))
-
-hy.lor.sigma <- matrix(
-  c(1.45, 1.85, 1.58, 1.48, 1.88, 1.62, 1.51, 1.91, 1.64),
-  ncol=3, nrow=3,
-  dimnames=list(hy.lor.outcomes, hy.lor.comparisons))
-
-mtc.hy.empirical.lor <- function(outcome.type, comparison.type) {
-  stopifnot(outcome.type %in% hy.lor.outcomes)
-  stopifnot(comparison.type %in% hy.lor.comparisons)
-  mtc.hy.prior("var", "dlnorm",
-    hy.lor.mu[outcome.type, comparison.type],
-    signif(hy.lor.sigma[outcome.type, comparison.type]^-2, digits=3))
-}
 
 mtc.model.call <- function(fn, model, ...) {
   fn <- paste(fn, model[['type']], sep='.')
@@ -64,6 +20,7 @@ mtc.model <- function(network, type="consistency",
     om.scale=NULL,
     hy.prior=mtc.hy.prior("std.dev", "dunif", 0, "om.scale"),
     dic=TRUE,
+    powerAdjust=NA,
     ...) {
   if (!inherits(network, "mtc.network")) {
     stop('Given network is not an mtc.network')
@@ -95,13 +52,23 @@ mtc.model <- function(network, type="consistency",
     network[['data.re']] <- add.std.err(network[['data.re']])
   }
 
+  if (!is.na(powerAdjust)) {
+    if (!(powerAdjust %in% names(network[['studies']]))) {
+      stop("The value of powerAdjust must be a column in the studies data frame")
+    }
+    if (any(network[['studies']][[powerAdjust]] > 1) || any(network[['studies']][[powerAdjust]] < 0)) {
+      stop("All power adjustment values must in [0, 1]")
+    }
+  }
+
   model <- list(
     type = type,
     linearModel = linearModel,
     network = network,
     n.chain = n.chain,
     var.scale = factor,
-    dic = dic)
+    dic = dic,
+    powerAdjust = powerAdjust)
 
   if (!mtc.model.defined(model)) {
     stop(paste(type, 'is not an MTC model type.'))
@@ -183,8 +150,12 @@ non.edges <- function(g, comparisons) {
 
 mtc.basic.parameters <- function(model) {
   graph <- if (!is.null(model[['tree']])) model[['tree']] else model[['graph']]
-  sapply(E(graph), function(e) {
-    v <- ends(graph, e, names=FALSE)
-    paste("d", V(graph)[v[1]]$name, V(graph)[v[2]]$name, sep=".")
-  })
+  if (!is.null(graph)) {
+    sapply(E(graph), function(e) {
+      v <- ends(graph, e, names=FALSE)
+      paste("d", V(graph)[v[1]]$name, V(graph)[v[2]]$name, sep=".")
+    })
+  } else {
+    NULL
+  }
 }

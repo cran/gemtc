@@ -9,17 +9,14 @@
 An R package for performing network meta-analyses (mixed treatment comparisons).
 }
 \details{
-Network meta-analysis, or mixed treatment comparison (MTC) is a technique to meta-analyze networks of trials comparing two or more treatments at the same time [Dias et al. 2013].
+Network meta-analysis, or mixed treatment comparison (MTC) is a technique to meta-analyze networks of trials comparing two or more treatments at the same time [Dias et al. 2013a].
 Using a Bayesian hierarchical model, all direct and indirect comparisons are taken into account to arrive at a single consistent estimate of the effect of all included treatments based on all included studies.
 
-This package allows the automated generation of network meta-analysis models [van Valkenhoef et al. 2012] that can be run using JAGS (using the rjags package), OpenBUGS (using the BRugs package) or WinBUGS (using the R2WinBUGS package).
-Note that there is a known issue with BUGS that prevents some models from running, though the remaining models appear to run correctly.
-It is highly recommended to use JAGS rather than BUGS.
+This package allows the automated generation of network meta-analysis models [van Valkenhoef et al. 2012], inclusing both fixed effect and random effects network meta-analysis, node-splitting models to identify inconsistency, and network meta-regression models.
+Models are estimated using JAGS (through the \code{rjags} package).
 
-This package is interoperable with GeMTC files that were created by the GeMTC GUI or exported from \href{http://drugis.org/addis}{ADDIS}.
+The package can read GeMTC files that were created by the GeMTC GUI (now obsolete) or exported from \href{http://drugis.org/addis}{ADDIS} 1.x, if the optional package \code{XML} is installed.
 The source for GeMTC is available under the GPL-3 on \href{https://github.com/gertvv/gemtc}{Github}.
-
-See \url{http://drugis.org/gemtc} for more information.
 }
 
 \author{Gert van Valkenhoef}
@@ -35,10 +32,20 @@ S. Dias, A.J. Sutton, A.E. Ades, and N.J. Welton (2013a),
 Medical Decision Making 33(5):607-617.
 [\href{http://dx.doi.org/10.1177/0272989X12458724}{doi:10.1177/0272989X12458724}]
 
-S. Dias, N.J. Welton, A.J. Sutton, D.M. Caldwell, G. Lu, and A.E. Ades (2013b),
+S. Dias, A.J. Sutton, N.J. Welton, and A.E. Ades (2013b),
+\emph{Heterogeneity - Subgroups, Meta-Regression, Bias, and Bias-Adjustment},
+Medical Decision Making 33(5):618-640. \cr
+[\href{http://dx.doi.org/10.1177/0272989X13485157}{doi:10.1177/0272989X13485157}]
+
+S. Dias, N.J. Welton, A.J. Sutton, D.M. Caldwell, G. Lu, and A.E. Ades (2013c),
 \emph{Inconsistency in Networks of Evidence Based on Randomized Controlled Trials},
 Medical Decision Making 33(5):641-656.
 [\href{http://dx.doi.org/10.1177/0272989X12455847}{doi:10.1177/0272989X12455847}]
+
+A. Gelman, A. Jakulin, M. Grazia Pittau, Y.-S. Su (2008),
+\emph{A weakly informative default prior distribution for logistic and other regression models},
+The Annals of Applied Statistics 2(4):1360-1383.
+[\href{http://dx.doi.org/10.1214/08-AOAS191}{doi:10.1214/08-AOAS191}]
 
 R.M. Turner, J. Davey, M.J. Clarke, S.G. Thompson, J.P.T. Higgins (2012),
 \emph{Predicting the extent of heterogeneity in meta-analysis, using empirical data from the Cochrane Database of Systematic Reviews},
@@ -53,8 +60,9 @@ Research Synthesis Methods 3(4):285-299.
 G. van Valkenhoef, S. Dias, A.E. Ades, and N.J. Welton (2015),
 \emph{Automated generation of node-splitting models for assessment of inconsistency in network meta-analysis},
 Research Synthesis Methods, accepted manuscript.
+[\href{http://dx.doi.org/10.1002/jrsm.1167}{doi:10.1002/jrsm.1167}]
 
-G. van Valkenhoef et al. (2014b),
+G. van Valkenhoef et al. (draft),
 \emph{Modeling inconsistency as heterogeneity in network meta-analysis},
 draft manuscript.
 

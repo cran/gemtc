@@ -1,9 +1,5 @@
 generate.summaries <- function(result) {
-  sel <- colnames(result$samples[[1]]) != 'deviance'
-  samples <- as.mcmc.list(lapply(result$samples, function(chain) {
-    chain[ , sel]
-  }))
-
+  samples <- result$samples
   data <- as.matrix(samples)
   data <- data[, grep("^d\\.", colnames(data))]
   if (result$model$type == "consistency") {
@@ -11,13 +7,15 @@ generate.summaries <- function(result) {
       effectiveSize = effectiveSize(samples),
       summary       = summary(samples),
       cov           = cov(as.matrix(data)),
-      ranks         = rank.probability(result)
+      ranks         = rank.probability(result),
+      dic           = result$deviance[c('Dbar', 'pD', 'DIC', 'data points')]
     )
   } else {
     list(
       effectiveSize = effectiveSize(samples),
       summary       = summary(samples),
-      cov           = cov(as.matrix(data))
+      cov           = cov(as.matrix(data)),
+      dic           = result$deviance[c('Dbar', 'pD', 'DIC', 'data points')]
     )
   }
 }
@@ -85,6 +83,19 @@ compare.summaries <- function(s1, s2) {
     get_reporter()$add_result(
       expectation(all(test['p.value',] > 0.025), formatError("Rank probabilities were not equal", s1$ranks, s2$ranks, test)))
   }
+
+  # Test equality of deviance statistics
+  if (!is.null(s1$dic)) {
+    n <- min(s1$effectiveSize, s2$effectiveSize)
+    expect_equal(s1$dic[['data points']], s2$dic[['data points']])
+    # deviance should follow an approximate Chi-squared distribution with variance 2*df
+    se <- sqrt(2 * s1$dic[['data points']] / n)
+    v1 <- unlist(s1$dic[c('Dbar', 'pD')])
+    v2 <- unlist(s2$dic[c('Dbar', 'pD')])
+    test <- pnorm(v1 - v2, 0, se)
+    get_reporter()$add_result(
+      expectation(all(test > 0.025), formatError("Model fit statistics were not equal", v1, v2, test)))
+  }
 }
 
 replicate.example <- function(name, network, type="consistency", linearModel="random", likelihood="binom", link="logit") {
@@ -95,10 +106,19 @@ replicate.example <- function(name, network, type="consistency", linearModel="ra
   n.adapt <- s1$summary$start - thin
   n.iter <- s1$summary$end - n.adapt
 
-  model <- mtc.model(network, type=type,
-    likelihood=likelihood, link=link,
-    linearModel=linearModel,
-    n.chain=4)
+  model <- if (exists("powerAdjustMode")) {
+    network$studies <- data.frame(study=mtc.studies.list(network)[['values']], x=1)
+    mtc.model(network, type=type,
+      likelihood=likelihood, link=link,
+      linearModel=linearModel,
+      n.chain=4,
+      powerAdjust='x')
+  } else {
+    mtc.model(network, type=type,
+      likelihood=likelihood, link=link,
+      linearModel=linearModel,
+      n.chain=4)
+  }
   capture.output(
     result <- mtc.run(model, n.adapt=n.adapt, n.iter=n.iter, thin=thin)
   )
