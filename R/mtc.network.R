@@ -94,8 +94,14 @@ mtc.network <- function(
   if (is.character(treatments) || is.factor(treatments)) {
     treatments <- data.frame(id=treatments, description=treatments)
   }
-
   treatments <- standardize.treatments(treatments)
+
+  # standardize the study data
+  if (!is.null(studies)) {
+    if (!is.data.frame(studies)) {
+      stop("studies must be a data frame")
+    }
+  }
 
   network <- list(
     description=description,
@@ -109,7 +115,7 @@ mtc.network <- function(
   }
 
   if (!is.null(studies) && nrow(studies) > 0) {
-    network <- c(network, list(studies=studies))
+    network <- c(network, list(studies=studies[order(studies[['study']]), ,drop=FALSE]))
   }
 
   mtc.network.validate(network)
@@ -119,7 +125,7 @@ mtc.network <- function(
 }
 
 fix.network <- function(network) {
-  # move data into data.ab for legacy networks 
+  # move data into data.ab for legacy networks
   if (is.null(network[['data.ab']]) && !is.null(network[['data']])) {
     network[['data.ab']] <- network[['data']]
     network[['data']] <- NULL
@@ -195,6 +201,14 @@ mtc.network.validate <- function(network) {
   # Check data.re is well formed
   if (!is.null(network[['data.re']])) {
     mtc.validate.data.re(network[['data.re']])
+  }
+
+  # If studies are given, they must match the treatments in the data tables
+  if (!is.null(network[['studies']])) {
+    data.studies <- c(as.character(network[['data.ab']][['study']]), as.character(network[['data.re']][['study']]))
+    if (!setequal(data.studies, as.character(network[['studies']][['study']]))) {
+      stop(paste('The studies data frame must match the studies in data.ab and data.re'))
+    }
   }
 
   check.duplicated.treatments(network)
@@ -313,7 +327,7 @@ graph.create <- function(v, e, ...) {
 mtc.network.graph <- function(network, include.nr.comparisons=FALSE) {
     comp <- if (include.nr.comparisons) mtc.nr.comparisons else mtc.comparisons
     comparisons <- comp(network)
-    treatments <- network[['treatments']][['id']]
+    treatments <-   network[['treatments']][['id']]
     graph.create(treatments, comparisons, arrow.mode=0)
 }
 
@@ -361,12 +375,17 @@ summary.mtc.network <- function(object, ...) {
        )
 }
 
-plot.mtc.network <- function(x, layout=igraph::layout.circle, dynamic.edge.width=TRUE, ...) {
+plot.mtc.network <- function(x, layout=igraph::layout.circle, dynamic.edge.width=TRUE, use.description=FALSE, ...) {
   x <- fix.network(x)
   g <- mtc.network.graph(x, TRUE)
+  labels <- if (use.description)
+                treatment.id.to.description(x, x[['treatments']][['id']])
+            else
+                as.character(x[['treatments']][['id']])
+
   if (dynamic.edge.width) {
-    igraph::plot.igraph(g, layout=layout, edge.width=E(g)$weight, ...)
+    igraph::plot.igraph(g, layout=layout, edge.width=E(g)$weight, vertex.label=labels, ...)
   } else {
-    igraph::plot.igraph(g, layout=layout, ...)
+    igraph::plot.igraph(g, layout=layout, vertex.label=labels, ...)
   }
 }
