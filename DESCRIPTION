@@ -1,9 +1,9 @@
 Package: gemtc
-Version: 0.8.1
-Date: 2016-09-06
+Version: 0.8-2
+Date: 2016-12-23
 Title: Network Meta-Analysis Using Bayesian Methods
 Author: Gert van Valkenhoef, Joel Kuiper
-Maintainer: Gert van Valkenhoef <g.h.m.van.valkenhoef@rug.nl>
+Maintainer: Gert van Valkenhoef <gert@gertvv.nl>
 Description: Network meta-analyses (mixed treatment comparisons) in the Bayesian
     framework using JAGS. Includes methods to assess heterogeneity and
     inconsistency, and a number of standard visualizations.
@@ -29,6 +29,6 @@ Collate: 'anohe.R' 'arrayize.R' 'blobbogram.R' 'template.R' 'code.R'
         'relative.effect.table.R'
 RoxygenNote: 5.0.1
 NeedsCompilation: yes
-Packaged: 2016-09-06 12:00:22 UTC; gert
+Packaged: 2016-12-23 09:58:13 UTC; gert
 Repository: CRAN
-Date/Publication: 2016-09-06 15:34:06
+Date/Publication: 2016-12-23 11:56:29
