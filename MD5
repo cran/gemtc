@@ -1,11 +1,11 @@
-8870ba2fe8d922567bfd44af8c23ae67 *DESCRIPTION
+169ed1094b0d6afc538b91ce608fa00e *DESCRIPTION
 9d3a1caf54988116196448d3be1c5391 *NAMESPACE
-03da2eae522e2cb1fb4d90684ce3614a *NEWS
+1072e675c3ab41ac197c5b659f665f1d *NEWS
 b3a696cc8d20b3655326a0f6b75e8b7c *R/anohe.R
 6d903be6824e6c328ca61e8a2aa21770 *R/arrayize.R
 d284b5b06675e86f1f5c18d5433872c8 *R/blobbogram.R
 214556d1bff92b759bda0dcc131fc551 *R/code.R
-c6788857be9148690151b7c4495266f1 *R/data.R
+b4bd0050d1d0f8dad732eec16dd5af2f *R/data.R
 090ac48587e92d87035dbbda3f10b452 *R/deviance.R
 70d1e05e58a7b895f6787cc54c0d38e4 *R/forest.R
 0b77877fd4e134cf3f89e50adcee03d5 *R/inits.R
@@ -26,7 +26,7 @@ d920e9fc3f09294bf112aad230fe193f *R/mtc.model.R
 7906690d4b794b39980c5389ca0431e7 *R/mtc.model.regression.R
 f4da5c215edd2902ab222c02b3d273c5 *R/mtc.model.ume.R
 5a770f83b6ffb6c9daf15b657944c0ec *R/mtc.model.use.R
-7c77569047b9e9d98f19ac6039b95c0f *R/mtc.network.R
+3ae56036952cca528e5d0689c7f0852a *R/mtc.network.R
 5ee7d9ff5a8b9b6f939cae5c75316ef4 *R/mtc.network.xml.R
 d67641cf6482aac17df1868e4704ceff *R/mtc.result.R
 8288c44a75e7d878e439c10f6162cd6c *R/mtc.run.R
@@ -34,8 +34,8 @@ d67641cf6482aac17df1868e4704ceff *R/mtc.result.R
 9ce118989bdd6ba5f044246adcfef9ca *R/plotCovariateEffect.R
 7a0a236660d47a656624b4311443e2bf *R/priors.R
 8ba9cf2a4593f737748c2ec2385e0a4e *R/rank.probability.R
-655542f7e1714aae574ed45891858349 *R/regression.R
-7d0d823f52965ae8b71530385312b47a *R/relative.effect.R
+58b430e0ce20f811cf72d3fc34d6a8a6 *R/regression.R
+7b19ee0b99952a449424e226639991ed *R/relative.effect.R
 ff4263f302acfe33fd24f6614c9453d8 *R/relative.effect.table.R
 528a5b9a4686abb4e9e3cfe640238483 *R/solveLP.R
 14e813850e636da8e924953737930982 *R/stopIfNotConsistent.R
@@ -145,7 +145,7 @@ afe76cfeff348e49018acfb9075aac10 *tests/testthat/helper-regress.R
 4fbd522e7097229750a34405ddcff066 *tests/testthat/helper-validate.R
 3b319315e1cc0502c7210dd9c7d82f43 *tests/testthat/test-regress-anohe.R
 8aa09a60804b1316f05c3af49f46351d *tests/testthat/test-regress-models.R
-07420578127ad114c43a0c61e776ac60 *tests/testthat/test-unit-allpairs.R
+7d370d7656bb1406c0342243738f6c85 *tests/testthat/test-unit-allpairs.R
 d4af94083f46af8b5d65bbd0f816ce7e *tests/testthat/test-unit-arrayize.R
 c9c675f6904f10f7283e2b3c7afa4bc6 *tests/testthat/test-unit-decompose.R
 5c85a2c82c291ef18685a952b6e9f731 *tests/testthat/test-unit-has.indirect.evidence.R
@@ -162,7 +162,7 @@ cda9ec2547390a1d3b96c5752d855096 *tests/testthat/test-unit-mtc.model.nodesplit.R
 e931482c55d706fe03f4c3114bf0848c *tests/testthat/test-unit-mtc.model.ume.R
 1fa68dde293b517964276f6243babdb4 *tests/testthat/test-unit-mtc.model.use.R
 d69feb9da9280c184ec022919e4d7f10 *tests/testthat/test-unit-mtc.model_columns.R
-884223525bed52c7bf02193f5085c1b3 *tests/testthat/test-unit-mtc.model_data.R
+21269c57fa1ef58f8dae85ef5ce0ac1c *tests/testthat/test-unit-mtc.model_data.R
 b9cc22dfdf07205094f5177253d6cf34 *tests/testthat/test-unit-mtc.model_duparm.R
 199ccc426a840986626ae58d586cfd4d *tests/testthat/test-unit-mtc.model_inits.R
 e0b9c6310090cc0650c2834b6d08c819 *tests/testthat/test-unit-mtc.network_data.re.R
@@ -171,7 +171,7 @@ e0b9c6310090cc0650c2834b6d08c819 *tests/testthat/test-unit-mtc.network_data.re.R
 011cd78fa882d2837cd986d72c9b6984 *tests/testthat/test-unit-nodesplit.R
 efdfd9b0965aabcd82051e5949a26854 *tests/testthat/test-unit-rank.quantiles.R
 925e59c7b5bd194d57220937458102fb *tests/testthat/test-unit-read.mtc.network.R
-ba23c7464840a64c3c860cdab165d84a *tests/testthat/test-unit-regression.R
+2bda7be78e50ca0fe4840a8293c0e640 *tests/testthat/test-unit-regression.R
 34fa9161d00455f9bb4bcc99d0a360a8 *tests/testthat/test-unit-relative.effect.R
 386a465a6dda678d766d7cd18398a29e *tests/testthat/test-unit-relative.effect.table.R
 cf448e0d0f58b45d6d4ffb66cbde4a3b *tests/testthat/test-unit-studyrow.R

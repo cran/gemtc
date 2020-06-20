@@ -1,6 +1,6 @@
 Package: gemtc
-Version: 0.8-4
-Date: 2020-03-31
+Version: 0.8-5
+Date: 2020-06-20
 Title: Network Meta-Analysis Using Bayesian Methods
 Author: Gert van Valkenhoef, Joel Kuiper
 Maintainer: Gert van Valkenhoef <gert@gertvv.nl>
@@ -9,7 +9,8 @@ Description: Network meta-analyses (mixed treatment comparisons) in the Bayesian
     inconsistency, and a number of standard visualizations.
 Depends: coda (>= 0.13)
 Imports: igraph (>= 1.0), meta (>= 2.1), plyr (>= 1.8), graphics,
-        grDevices, stats, utils, grid, rjags (>= 4-0), truncnorm, Rglpk
+        grDevices, stats, utils, grid, rjags (>= 4-0), truncnorm,
+        Rglpk, forcats (>= 0.5.0)
 Suggests: testthat (>= 0.8), Matrix, XML (>= 3.6)
 URL: http://github.com/gertvv/gemtc
 License: GPL-3
@@ -29,6 +30,6 @@ Collate: 'anohe.R' 'arrayize.R' 'blobbogram.R' 'template.R' 'code.R'
         'relative.effect.table.R'
 RoxygenNote: 7.1.0
 NeedsCompilation: yes
-Packaged: 2020-03-31 17:50:28 UTC; gert
+Packaged: 2020-06-20 12:25:15 UTC; gert
 Repository: CRAN
-Date/Publication: 2020-03-31 19:40:02 UTC
+Date/Publication: 2020-06-20 22:20:02 UTC
