@@ -1,6 +1,6 @@
-169ed1094b0d6afc538b91ce608fa00e *DESCRIPTION
+8181726ee0cbb9583c6bc946b2034248 *DESCRIPTION
 9d3a1caf54988116196448d3be1c5391 *NAMESPACE
-1072e675c3ab41ac197c5b659f665f1d *NEWS
+5e88a59f1799cee427a3a401a199891d *NEWS
 b3a696cc8d20b3655326a0f6b75e8b7c *R/anohe.R
 6d903be6824e6c328ca61e8a2aa21770 *R/arrayize.R
 d284b5b06675e86f1f5c18d5433872c8 *R/blobbogram.R
@@ -145,7 +145,7 @@ afe76cfeff348e49018acfb9075aac10 *tests/testthat/helper-regress.R
 4fbd522e7097229750a34405ddcff066 *tests/testthat/helper-validate.R
 3b319315e1cc0502c7210dd9c7d82f43 *tests/testthat/test-regress-anohe.R
 8aa09a60804b1316f05c3af49f46351d *tests/testthat/test-regress-models.R
-7d370d7656bb1406c0342243738f6c85 *tests/testthat/test-unit-allpairs.R
+f1f090f17ac119f42839bb865c594268 *tests/testthat/test-unit-allpairs.R
 d4af94083f46af8b5d65bbd0f816ce7e *tests/testthat/test-unit-arrayize.R
 c9c675f6904f10f7283e2b3c7afa4bc6 *tests/testthat/test-unit-decompose.R
 5c85a2c82c291ef18685a952b6e9f731 *tests/testthat/test-unit-has.indirect.evidence.R
