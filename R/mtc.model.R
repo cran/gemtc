@@ -19,6 +19,7 @@ mtc.model <- function(network, type="consistency",
     linearModel="random",
     om.scale=NULL,
     hy.prior=mtc.hy.prior("std.dev", "dunif", 0, "om.scale"),
+    re.prior.sd=15*om.scale,
     dic=TRUE,
     powerAdjust=NA,
     ...) {
@@ -37,6 +38,10 @@ mtc.model <- function(network, type="consistency",
 
   if (check.duplicated.treatments(network, warn=TRUE)) {
     stop("Studies with duplicated treatments are not supported.")
+  }
+
+  if (!igraph::is_connected(mtc.network.graph(network))) {
+    stop("Network is disconnected - see plot(network)")
   }
 
   add.std.err <- function(data) {
@@ -120,6 +125,7 @@ mtc.model <- function(network, type="consistency",
 
   model[['om.scale']] <- if (!is.null(om.scale)) om.scale else guess.scale(model)
   model[['hy.prior']] <- hy.prior
+  model[['re.prior.sd']] <- if(length(re.prior.sd) == 1) re.prior.sd else 15 * model[['om.scale']]
 
   mtc.model.call('mtc.model', model, ...)
 }
