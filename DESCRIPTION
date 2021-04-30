@@ -1,6 +1,6 @@
 Package: gemtc
-Version: 0.8-8
-Date: 2020-11-29
+Version: 1.0-0
+Date: 2021-04-30
 Title: Network Meta-Analysis Using Bayesian Methods
 Author: Gert van Valkenhoef, Joel Kuiper
 Maintainer: Gert van Valkenhoef <gert@gertvv.nl>
@@ -13,7 +13,7 @@ Depends: coda (>= 0.13)
 Imports: igraph (>= 1.0), meta (>= 2.1), plyr (>= 1.8), graphics,
         grDevices, stats, utils, grid, rjags (>= 4-0), truncnorm,
         Rglpk, forcats (>= 0.5.0)
-Suggests: testthat (>= 0.8), Matrix, XML (>= 3.6)
+Suggests: testthat (>= 0.8), Matrix
 URL: https://github.com/gertvv/gemtc
 License: GPL-3
 LazyData: true
@@ -26,12 +26,12 @@ Collate: 'anohe.R' 'arrayize.R' 'blobbogram.R' 'template.R' 'code.R'
         'mtc.hy.prior.R' 'mtc.model.R' 'mtc.model.consistency.R'
         'mtc.model.nodesplit.R' 'mtc.model.regression.R'
         'mtc.model.ume.R' 'mtc.model.use.R' 'mtc.network.R'
-        'mtc.network.xml.R' 'stopIfNotConsistent.R' 'mtc.result.R'
-        'mtc.run.R' 'nodesplit.R' 'plotCovariateEffect.R' 'priors.R'
+        'stopIfNotConsistent.R' 'mtc.result.R' 'mtc.run.R'
+        'nodesplit.R' 'plotCovariateEffect.R' 'priors.R'
         'rank.probability.R' 'regression.R' 'relative.effect.R'
         'relative.effect.table.R'
 RoxygenNote: 7.1.1
 NeedsCompilation: yes
-Packaged: 2020-11-29 13:23:22 UTC; gert
+Packaged: 2021-04-30 18:26:03 UTC; gert
 Repository: CRAN
-Date/Publication: 2020-11-29 18:50:02 UTC
+Date/Publication: 2021-04-30 22:40:13 UTC
