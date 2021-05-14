@@ -1,6 +1,6 @@
-12caae1ff19e6df8e2ce993f13c34054 *DESCRIPTION
+1e2ea8b00aa0ee1760dae951df4e516c *DESCRIPTION
 7b18b23550854196903ceb6e33345863 *NAMESPACE
-37649e537c389e2d74e0cdbdc5e51c81 *NEWS
+83b13347848bebfe998edc16307a5748 *NEWS
 b3a696cc8d20b3655326a0f6b75e8b7c *R/anohe.R
 6d903be6824e6c328ca61e8a2aa21770 *R/arrayize.R
 d284b5b06675e86f1f5c18d5433872c8 *R/blobbogram.R
@@ -12,7 +12,7 @@ cddc108b85b0a88623b9abbd8e9aad92 *R/deviance.R
 e28287f0143a344e8a5f7f2bbb3b41e7 *R/likelihoods.R
 4e90e1bce5b8a1ddeb81325068520806 *R/ll-helper.counts.R
 5933ad80f9b53dbfc723f0a9d2b5047f *R/ll.binom.cloglog.R
-1d0d832001005a78421d663979081c0e *R/ll.binom.log.R
+ed886a8ce0bba87bcd43e30272162672 *R/ll.binom.log.R
 16af394a089d99402f106cc374273851 *R/ll.binom.logit.R
 b65d8f428d13df8ac0823c1c48c2d472 *R/ll.call.R
 f1f11ccb091f81305523fa835cbb3724 *R/ll.normal.identity.R
@@ -39,7 +39,7 @@ ff4263f302acfe33fd24f6614c9453d8 *R/relative.effect.table.R
 528a5b9a4686abb4e9e3cfe640238483 *R/solveLP.R
 14e813850e636da8e924953737930982 *R/stopIfNotConsistent.R
 21f0f8b82219b189bf524dbf02cc01a9 *R/template.R
-018d0f1280fa4f0f18713e2cdc50c0c4 *build/partial.rdb
+45cbc67a8a043c83f4d666edbf9597f8 *build/partial.rdb
 52d5792d35840afe3c17847307867a38 *data/atrialFibrillation.rdata
 0975dd66cc8b14d8d89603932c7b1d98 *data/blocker.rdata
 446539b67a85fc846af01f00c06ada71 *data/certolizumab.rdata
@@ -163,7 +163,7 @@ e931482c55d706fe03f4c3114bf0848c *tests/testthat/test-unit-mtc.model.ume.R
 dbc10c0890ee10191d83eda231991288 *tests/testthat/test-unit-mtc.model_columns.R
 fffe44534860efbc8084da1cea3918be *tests/testthat/test-unit-mtc.model_data.R
 b9cc22dfdf07205094f5177253d6cf34 *tests/testthat/test-unit-mtc.model_duparm.R
-199ccc426a840986626ae58d586cfd4d *tests/testthat/test-unit-mtc.model_inits.R
+cc589a6034a43501c1e4334058bdff3a *tests/testthat/test-unit-mtc.model_inits.R
 e09d44e288653b0b8cc30c7e1b7fd8e9 *tests/testthat/test-unit-mtc.network_data.re.R
 5f5621ecc70134ac33b29d4360f6c93a *tests/testthat/test-unit-mtc.nr.comparisons.R
 38e0e46eda7295ba7ab5710b9ae8e75b *tests/testthat/test-unit-mtc.study.treatment.matrix.R
