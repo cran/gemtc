@@ -1,3 +1,11 @@
+gemtc 1.0-2
+===========
+
+Released 2023-06-21
+
+ * Fix compatibility with latest igraph (1.5.0)
+ * Fix covariateEffectPlot on older versions of R
+
 gemtc 1.0-1
 ===========
 

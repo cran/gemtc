@@ -1,6 +1,6 @@
 Package: gemtc
-Version: 1.0-1
-Date: 2021-05-14
+Version: 1.0-2
+Date: 2023-06-21
 Title: Network Meta-Analysis Using Bayesian Methods
 Author: Gert van Valkenhoef, Joel Kuiper
 Maintainer: Gert van Valkenhoef <gert@gertvv.nl>
@@ -9,7 +9,7 @@ Description: Network meta-analyses (mixed treatment comparisons) in the Bayesian
     inconsistency, and a number of standard visualizations.
     van Valkenhoef et al. (2012) <doi:10.1002/jrsm.1054>;
     van Valkenhoef et al. (2015) <doi:10.1002/jrsm.1167>.
-Depends: coda (>= 0.13)
+Depends: R (>= 3.5.0), coda (>= 0.13)
 Imports: igraph (>= 1.0), meta (>= 2.1), plyr (>= 1.8), graphics,
         grDevices, stats, utils, grid, rjags (>= 4-0), truncnorm,
         Rglpk, forcats (>= 0.5.0)
@@ -30,8 +30,8 @@ Collate: 'anohe.R' 'arrayize.R' 'blobbogram.R' 'template.R' 'code.R'
         'nodesplit.R' 'plotCovariateEffect.R' 'priors.R'
         'rank.probability.R' 'regression.R' 'relative.effect.R'
         'relative.effect.table.R'
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 NeedsCompilation: yes
-Packaged: 2021-05-14 19:34:45 UTC; gert
+Packaged: 2023-06-21 18:18:18 UTC; gert
 Repository: CRAN
-Date/Publication: 2021-05-14 23:20:02 UTC
+Date/Publication: 2023-06-21 19:00:02 UTC
